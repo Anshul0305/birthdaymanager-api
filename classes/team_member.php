@@ -17,35 +17,29 @@ class TeamMember{
 	public function register(){
     $result = add_team_member_to_db($this->first_name, $this->last_name, $this->email, $this->password, $this->official_dob, $this->member_type);
 		return $result;
-  }
+  	}
   
 	// Login a user
-  public function login(){
-    
-  }
-	
-	// Get List of All Team Members
-	public function get_all_team_members(){
-        $teammembers = get_all_team_members_from_db();
-	    return $teammembers;	
+	public function login(){
+	    
 	}
 	
+	// Get List of Team Member
+	public function get_team_member($member_id){
+        $teammembers = get_team_member_from_db($member_id);
+	    return $teammembers;	
+	}
+
 	// Add Team Member
 	public function add_team_member(){
 	  $result = add_team_member_to_db($this->first_name, $this->last_name, $this->email, get_random_password(), $this->official_dob, $this->member_type);
 		return $result;
 	}
-	
-	// Get List of All Funds of Team Members
-	public function get_all_funds(){
-		$funds = get_all_funds_from_db();
-		return $funds;
-	}
-	
+
 	// Get Current Fund of Team Member
 	public function get_fund($member_id){
-		$current_fund = get_fund_from_db($member_id);
-		return $current_fund;
+		$fund = get_fund_from_db($member_id);
+		return $fund;
 	}
 	
 	// Add Fund
@@ -55,13 +49,6 @@ class TeamMember{
 		$result = add_fund_to_db($this->member_id, $new_fund_balance, $topup_amount);
 		return $result;
 	}
-	
-	// Last Topup
-	public function last_topup(){
-		$last_topup = get_last_topup_from_db($this->member_id);
-		return $last_topup;
-	}
-		
 	
 }
 

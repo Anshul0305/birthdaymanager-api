@@ -1,5 +1,6 @@
 <?php
 
+
 function connect(){
 	$servername = 'localhost';
 	$username = 'anshul';
@@ -22,25 +23,37 @@ function return_message($result){
 }
 	
 
-// Team Members
-function get_all_team_members_from_db(){
+// ************************** Team Members **************************
+
+function get_team_member_from_db($member_id){
 	$connection = connect();
-	$sql = "Select member_id, first_name, last_name, email, dob, official_dob, member_type from team_members";
+	if ($member_id == "") {
+		$sql = "Select member_id, first_name, last_name, email, dob, official_dob, member_type from team_members";
+	}
+	else{
+		$sql = "Select member_id, first_name, last_name, email, dob, official_dob, member_type from team_members where member_id=".$member_id;
+	}
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$teammembers = array();
 		if($result->num_rows>0){
 			while($row = $result->fetch_assoc()){
-				$teammembers[] = array('member_id'=>$row['member_id'], 'first_name'=>$row['first_name'],'last_name'=>$row['last_name'], 'dob'=>$row['dob'], 'official_dob'=>$row['official_dob'], 'email'=>$row['email']);
+					$teammembers[] = array('member_id'=>$row['member_id'], 'first_name'=>$row['first_name'],'last_name'=>$row['last_name'], 'dob'=>$row['dob'], 'official_dob'=>$row['official_dob'], 'email'=>$row['email'], 'member_type'=>$row['member_type']);
 			}
 		}
 	return $teammembers;
 }
 
-// Funds
-function get_all_funds_from_db(){
+// ************************** Funds **************************
+
+function get_fund_from_db($member_id){
 	$connection = connect();
-	$sql = "Select member_id, first_name, last_name, fund_balance from team_members";
+	if ($member_id == "") {
+		$sql = "Select member_id, first_name, last_name, fund_balance from team_members";
+	}
+	else{
+		$sql = "Select member_id, first_name, last_name, fund_balance from team_members where member_id = ".$member_id;
+	}
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$funds = array();
@@ -51,6 +64,22 @@ function get_all_funds_from_db(){
 	}
 	return $funds;
 }
+
+function get_last_topup_from_db($member_id){
+	$connection = connect();
+	$sql = "SELECT `transaction_amount` FROM `transactions` WHERE member_id=".$member_id." and transaction_type=\"credit\" ORDER BY `transaction_id` DESC LIMIT 1";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	if($result->num_rows>0){
+		while($row = $result->fetch_assoc()){
+			$topup = $row['transaction_amount'];
+		}
+	}
+	return $topup;
+}
+
+
+// ************************** Others **************************
 
 function add_team_member_to_db($first_name, $last_name, $email, $password, $official_dob, $member_type){
 	$connection = connect();
@@ -72,31 +101,9 @@ function add_fund_to_db($member_id, $new_fund_balance, $topup_amount){
 	return return_message($result);
 }
 
-function get_fund_from_db($member_id){
-	$connection = connect();
-	$sql = "SELECT `fund_balance` FROM `team_members` WHERE `member_id` = ".$member_id;
-	$result = $connection->query($sql);
-	disconnect($connection);
-	if($result->num_rows>0){
-		while($row = $result->fetch_assoc()){
-			$fund = $row['fund_balance'];
-		}
-	}
-	return $fund;
-}
 
-function get_last_topup_from_db($member_id){
-	$connection = connect();
-	$sql = "SELECT `transaction_amount` FROM `transactions` WHERE member_id=".$member_id." and transaction_type=\"credit\" ORDER BY `transaction_id` DESC LIMIT 1";
-	$result = $connection->query($sql);
-	disconnect($connection);
-	if($result->num_rows>0){
-		while($row = $result->fetch_assoc()){
-			$topup = $row['transaction_amount'];
-		}
-	}
-	return $topup;
-}
+
+
 
 
 function celebration_add_to_db($birthday_of_member_id, $celebartion_date, $cake_amount, $total_attendees, $attendees_member_id, $perhead_contribution){

@@ -8,6 +8,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Get Params
 $query = $_GET["query"];
 $subquery = $_GET["subquery"];
+//$subquery = "1";
 $get_member_id = $_GET["member_id"];
 
 // Post Params
@@ -26,9 +27,9 @@ $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
 
 // Headers
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-
+//header("Access-Control-Allow-Origin: *");
+//header("Content-Type: application/json; charset=UTF-8");
+	
 switch($method){
 	case 'PUT':
     handle_put($query,$subquery);  
@@ -39,7 +40,7 @@ switch($method){
   case 'GET':
     handle_get($query,$subquery);  
     break;
-  case 'DELETE':
+  case "DELETE":
     handle_delete($query,$subquery);  
     break;
   default:
@@ -50,18 +51,19 @@ switch($method){
 
 // Handle Get Requests
 function handle_get($query,$subquery){
+
 	switch($query){
 			
 	case "team-member":{
 		$team_member = new TeamMember();
-		$team_member_list = $team_member->get_all_team_members();
+		$team_member_list = $team_member->get_team_member($subquery);
 		echo json_encode($team_member_list);
 	}
 	break;
 	
 	case "fund":{
 		$funds = new TeamMember();
-		$fund_list = $funds->get_all_funds();
+		$fund_list = $funds->get_fund($subquery);
 	 	echo json_encode($fund_list);
 	}
 	break;
@@ -77,6 +79,7 @@ function handle_get($query,$subquery){
 		$default=array();
 		$default['Birthday_Manager'] = array('Version' => '1.0', 'Query' =>$query);
 		echo json_encode($default);
+
 	}
 }
 	
