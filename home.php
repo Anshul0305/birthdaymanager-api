@@ -7,9 +7,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Get Params
 $query = $_GET["query"];
+$val = $_GET["val"];
 $subquery = $_GET["subquery"];
-//$subquery = "1";
-$get_member_id = $_GET["member_id"];
+
 
 // Post Params
 $first_name = $_POST["first_name"];
@@ -26,44 +26,65 @@ $perhead_contribution = $_POST["perhead_contribution"];
 $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
 
-// Headers
+//Headers
 //header("Access-Control-Allow-Origin: *");
 //header("Content-Type: application/json; charset=UTF-8");
-	
-switch($method){
+
+
+//Debug Define
+//$method = "GET";
+//$query = "team-member";
+//$val = "1";
+
+//$subquery = "";
+
+try {
+	switch($method){
 	case 'PUT':
-    handle_put($query,$subquery);  
+    handle_put($query,$val,$subquery);  
     break;
   case 'POST':
-    handle_post($query,$subquery);  
+    handle_post($query,$val,$subquery);  
     break;
   case 'GET':
-    handle_get($query,$subquery);  
+    handle_get($query,$val,$subquery);  
     break;
   case "DELETE":
-    handle_delete($query,$subquery);  
+    handle_delete($query,$val,$subquery);  
     break;
   default:
-    handle_error($query,$subquery);  
+    //handle_error($query,$val,$subquery);  
     break;
 }
-
+	
+} catch (Exception $e) {
+	echo "here";
+}
 
 // Handle Get Requests
-function handle_get($query,$subquery){
+function handle_get($query,$val,$subquery){
 
 	switch($query){
 			
 	case "team-member":{
 		$team_member = new TeamMember();
-		$team_member_list = $team_member->get_team_member($subquery);
+		switch($subquery){
+			case "fund":{
+				$team_member_list = $team_member->get_fund($val, $subquery);
+			}
+			break;
+			default:{
+				$team_member_list = $team_member->get_team_member($val, $subquery);
+			}
+			break;
+		}
 		echo json_encode($team_member_list);
 	}
 	break;
 	
 	case "fund":{
 		$funds = new TeamMember();
-		$fund_list = $funds->get_fund($subquery);
+		$fund_list = $funds->get_fund($val, $subquery);
 	 	echo json_encode($fund_list);
 	}
 	break;
@@ -86,7 +107,7 @@ function handle_get($query,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $subquery){
+function handle_post($query, $val){
 	switch($query){
 		case "team-member":{
 		$team_member = new TeamMember();
@@ -123,7 +144,3 @@ function handle_post($query, $subquery){
 	}
 }
 
-
-
-
-?>

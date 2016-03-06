@@ -25,21 +25,21 @@ class TeamMember{
 	}
 	
 	// Get List of Team Member
-	public function get_team_member($member_id){
-        $teammembers = get_team_member_from_db($member_id);
+	public function get_team_member($id, $subquery){
+        $teammembers = get_team_member_from_db($id, $subquery);
 	    return $teammembers;	
+	}
+
+		// Get Current Fund of Team Member
+	public function get_fund($id, $subquery){
+		$fund = get_fund_from_db($id, $subquery);
+		return $fund;
 	}
 
 	// Add Team Member
 	public function add_team_member(){
 	  $result = add_team_member_to_db($this->first_name, $this->last_name, $this->email, get_random_password(), $this->official_dob, $this->member_type);
 		return $result;
-	}
-
-	// Get Current Fund of Team Member
-	public function get_fund($member_id){
-		$fund = get_fund_from_db($member_id);
-		return $fund;
 	}
 	
 	// Add Fund
@@ -48,6 +48,11 @@ class TeamMember{
 		$new_fund_balance = ((int)(get_fund_from_db($this->member_id)) + (int)($topup_amount));
 		$result = add_fund_to_db($this->member_id, $new_fund_balance, $topup_amount);
 		return $result;
+	}
+
+
+	public function process($id, $subquery){
+
 	}
 	
 }
