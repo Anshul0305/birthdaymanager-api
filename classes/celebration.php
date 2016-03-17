@@ -9,17 +9,23 @@ class Celebration{
 	public $attendees_member_id;
 	public $perhead_contribution;
 	public $attendees_id_array;
+
+
+	// Gateway to other functions
+	public function process($id, $subquery){
+
+	}
 	
 	public function celebrate_birthday(){
 		// Get the perhead contribution
-		$this->perhead_contribution = ((float)$this->cake_amount)/((int)$this->total_attendees - 1);
-		$result = celebration_add_to_db($this->birthday_of_member_id, $this->celebration_date, $this->cake_amount, $this->total_attendees, $this->attendees_member_id, $this->perhead_contribution);
-		return $result;
+		//$this->perhead_contribution = ((float)$this->cake_amount)/((int)$this->total_attendees - 1);
+		//$result = celebration_add_to_db($this->birthday_of_member_id, $this->celebration_date, $this->cake_amount, $this->total_attendees, $this->attendees_member_id, $this->perhead_contribution);
+		//return $result;
 	}
 	
 	public function get_all_celebrations(){
-		$celebrations = get_all_celebrations_from_db();
-		return $celebrations;
+		//$celebrations = get_all_celebrations_from_db();
+		//return $celebrations;
 	}
 
 }
