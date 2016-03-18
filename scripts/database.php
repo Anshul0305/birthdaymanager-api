@@ -34,6 +34,7 @@ function get_team_details_by_team_id($team_id){
 			$team_detail[] = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
+				'admin_id' => $row["team_admin_id"],
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
@@ -122,7 +123,7 @@ function get_member_details_by_member_id($member_id){
 
 	$member_details = array();
 	if ($result->num_rows>0) {
-		$team_detail = array();
+		$member_detail = array();
 		while ($row = $result->fetch_assoc()) {
 			$member_detail[] = array(
 				'id' => $row["member_id"],
@@ -130,7 +131,7 @@ function get_member_details_by_member_id($member_id){
 				'last_name' => $row["last_name"],
 				'dob' => $row["official_dob"],
 				'email' => $row["email"],
-				'teams' => get_team_details_by_team_ids(get_team_id_by_member_id($row["member_id"]))
+				'teams' => get_team_details_by_team_ids_and_member_id(get_team_id_by_member_id($row["member_id"]),$row["member_id"])
 			);
 		}
 		$member_details = $member_detail;
@@ -150,5 +151,34 @@ function get_team_id_by_member_id($member_id){
 	}
 	return $team_id;
 }
-
+function get_team_details_by_team_id_and_member_id($team_id,$member_id){
+	$connection = connect();
+	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_detail_list = array();
+	if ($result->num_rows>0) {
+		$team_detail = "";
+		while ($row = $result->fetch_assoc()) {
+			$team_detail = array(
+				'id' => $row["team_id"],
+				'name' => $row["team_name"],
+				'admin_id' => $row["team_admin_id"],
+				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
+				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
+				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
+			);
+		}
+		$team_detail_list = $team_detail;
+	}
+	return $team_detail_list;
+}
+function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
+	$team_details = array();
+	foreach($team_ids as $team_id){
+		$team_details[] = get_team_details_by_team_id_and_member_id($team_id, $member_id);
+	}
+	return $team_details;
+}
 ?>
