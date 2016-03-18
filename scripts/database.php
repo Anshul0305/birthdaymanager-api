@@ -34,7 +34,6 @@ function get_team_details_by_team_id($team_id){
 			$team_detail[] = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
-				'admin_id' => $row["team_admin_id"],
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
@@ -163,7 +162,6 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 			$team_detail = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
-				'admin_id' => $row["team_admin_id"],
 				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
