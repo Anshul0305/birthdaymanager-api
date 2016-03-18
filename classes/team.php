@@ -18,8 +18,7 @@ class Team {
 			break;
 
 			default:{
-				$team_details = get_team_details_by_team_id($team_id);
-				return $team_details;
+				return get_team_details_by_team_id($team_id);
 			}
 			break;
 		}
