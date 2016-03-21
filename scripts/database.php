@@ -111,6 +111,31 @@ function get_team_fund_by_team_id($team_id){
 	}
 	return $team_fund_balance;
 }
+function post_create_new_team(Team $team){
+	$team_name = $team->team_name;
+	$team_admin_id = $team->admin_id;
+	$connection = connect();
+	$sql = "INSERT INTO team (team_id, team_name, team_admin_id) VALUES (NULL,'".$team_name."',".$team_admin_id.")";
+	$result_1 = $connection->query($sql);
+	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
+	$result = $connection->query($sql);
+	$last_team_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$last_team_id = $row["team_id"];
+		}
+	}
+	$sql = "INSERT INTO team_teammember (team_team_member_id, team_id, member_id, fund_balance) VALUES (NULL, ".$last_team_id.", ".$team_admin_id.", 0)";
+	$result_2 = $connection->query($sql);
+	disconnect($connection);
+
+	if($result_1 == true && $result_2 == true){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
 // Member Functions

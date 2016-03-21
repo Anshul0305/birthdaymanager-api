@@ -10,7 +10,6 @@ $query = $_GET["query"];
 $val = $_GET["val"];
 $subquery = $_GET["subquery"];
 
-
 // Post Params
 $first_name = $_POST["first_name"];
 $last_name = $_POST["last_name"];
@@ -25,38 +24,43 @@ $total_attendees = $_POST["total_attendees"];
 $per_head_contribution = $_POST["per_head_contribution"];
 $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
+$team_name = $_POST["team_name"];
+$team_admin_id = $_POST["team_admin_id"];
 
 //Headers
 //header("Access-Control-Allow-Origin: *");
 //header("Content-Type: application/json; charset=UTF-8");
 
-
 //Debug Define
-//$method = "GET";
-//$query = "team";
-//$subquery = "celebration";
+//$method = "POST";
+//$query = "teams";
+//////$subquery = "celebration";
+//$team_name = "Test";
+//$team_admin_id = 1;
 
+// Handle Methods
 try {
-  switch($method){
-  case 'PUT':
-    handle_put($query,$val,$subquery);  
-    break;
-  case 'POST':
-    handle_post($query,$val,$subquery);  
-    break;
-  case 'GET':
-    handle_get($query,$val,$subquery);  
-    break;
-  case "DELETE":
-    handle_delete($query,$val,$subquery);  
-    break;
-  default:
-    //handle_error($query,$val,$subquery);  
-    break;
-}
-	
-} catch (Exception $e) {
-	echo "here";
+	  switch($method){
+	  case 'PUT':
+		handle_put($query,$val,$subquery);
+		break;
+	  case 'POST':
+		$response_code = handle_post($query,$team_name, $team_admin_id);
+		show_response($response_code);
+		break;
+	  case 'GET':
+		handle_get($query,$val,$subquery);
+		break;
+	  case "DELETE":
+		handle_delete($query,$val,$subquery);
+		break;
+	  default:
+		//handle_error($query,$val,$subquery);
+		break;
+	  }
+	}
+catch (Exception $e) {
+		echo "here";
 }
 
 // Handle Get Requests
@@ -99,6 +103,40 @@ function handle_get($query,$val,$subquery){
 	}
 }
 	
+}
+
+// Handle Post Requests
+function handle_post($query, $team_name, $team_admin_id){
+	switch($query){
+		case "teams":{
+			$team_obj = new Team();
+			$team_obj->team_name = $team_name;
+			$team_obj->admin_id = $team_admin_id;
+			return $team_obj->process_post();
+		}
+		break;
+		default:{
+
+		}
+		break;
+	}
+}
+
+// Show Response Status Code
+function show_response($response_code){
+	switch($response_code){
+		case 200:{
+			header("HTTP/1.1 200");
+		}
+		break;
+		case 400:{
+			header("HTTP/1.1 400");
+		}
+			break;
+		default:{
+
+		}
+	}
 }
 
 
