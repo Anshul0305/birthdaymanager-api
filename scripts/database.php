@@ -204,4 +204,22 @@ function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
 	}
 	return $team_details;
 }
-?>
+
+
+// Login Functions
+function login_user($username, $password){
+	$connection = connect();
+	$sql = "SELECT email, password FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_pass = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $username){
+				$db_pass = $row["password"];
+			}
+		}
+	}
+	$status = ($password == $db_pass)?true:false;
+	return $status;
+}

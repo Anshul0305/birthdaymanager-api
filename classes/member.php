@@ -35,6 +35,24 @@ class Member {
 			break;
 		}
 	}
+
+	public function process_post($action){
+		switch($action){
+			case "login":{
+				$status = login_user($this->email, $this->password);
+				if($status == true){
+					return 200;
+				}
+				else{
+					return 401;
+				}
+			}
+			break;
+			default:{
+
+			}
+			break;
+		}
+	}
 	
 }
-?>

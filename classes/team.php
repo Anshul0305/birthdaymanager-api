@@ -23,13 +23,22 @@ class Team {
 		}
 	}
 
-	public function process_post(){
-		$success = post_create_new_team($this);
-		if ($success == true){
-			return 200;
-		}
-		else{
-			return 400;
+	public function process_post($action){
+		switch($action){
+			case "create-team":{
+				$success = post_create_new_team($this);
+				if ($success == true){
+					return 200;
+				}
+				else{
+					return 400;
+				}
+			}
+			break;
+			default:{
+
+			}
+			break;
 		}
 	}
 	

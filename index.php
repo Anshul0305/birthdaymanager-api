@@ -33,10 +33,12 @@ $team_admin_id = $_POST["team_admin_id"];
 
 //Debug Define
 //$method = "POST";
-//$query = "teams";
+//$query = "login";
 //////$subquery = "celebration";
 //$team_name = "Test";
 //$team_admin_id = 1;
+//$email = "anshul@gmail.com";
+//$password = "anshul";
 
 // Handle Methods
 try {
@@ -45,7 +47,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		$response_code = handle_post($query,$team_name, $team_admin_id);
+		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password);
 		show_response($response_code);
 		break;
 	  case 'GET':
@@ -106,13 +108,20 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id){
+function handle_post($query, $team_name, $team_admin_id, $email, $password){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
 			$team_obj->team_name = $team_name;
 			$team_obj->admin_id = $team_admin_id;
-			return $team_obj->process_post();
+			return $team_obj->process_post("create-team");
+		}
+		break;
+		case "login":{
+			$member_obj = new Member();
+			$member_obj->email = $email;
+			$member_obj->password = $password;
+			return $member_obj->process_post("login");
 		}
 		break;
 		default:{
@@ -132,9 +141,13 @@ function show_response($response_code){
 		case 400:{
 			header("HTTP/1.1 400");
 		}
-			break;
+		break;
+		case 401:{
+			header("HTTP/1.1 401");
+		}
+		break;
 		default:{
-
+			header("HTTP/1.1 400");
 		}
 	}
 }
