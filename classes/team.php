@@ -11,19 +11,35 @@ class Team {
 	// Gateway to other functions
 	public function process_get($team_id, $subquery){
 		switch($subquery){
-
 			case "stub":{
 
 			}
 			break;
 
 			default:{
-				$team_details = get_team_details_by_team_id($team_id);
-				return $team_details;
+				return get_team_details_by_team_id($team_id);
+			}
+			break;
+		}
+	}
+
+	public function process_post($action){
+		switch($action){
+			case "create-team":{
+				$success = post_create_new_team($this);
+				if ($success == true){
+					return 200;
+				}
+				else{
+					return 400;
+				}
+			}
+			break;
+			default:{
+
 			}
 			break;
 		}
 	}
 	
 }
-?>

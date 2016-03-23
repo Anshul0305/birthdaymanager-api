@@ -111,6 +111,31 @@ function get_team_fund_by_team_id($team_id){
 	}
 	return $team_fund_balance;
 }
+function post_create_new_team(Team $team){
+	$team_name = $team->team_name;
+	$team_admin_id = $team->admin_id;
+	$connection = connect();
+	$sql = "INSERT INTO team (team_id, team_name, team_admin_id) VALUES (NULL,'".$team_name."',".$team_admin_id.")";
+	$result_1 = $connection->query($sql);
+	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
+	$result = $connection->query($sql);
+	$last_team_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$last_team_id = $row["team_id"];
+		}
+	}
+	$sql = "INSERT INTO team_teammember (team_team_member_id, team_id, member_id, fund_balance) VALUES (NULL, ".$last_team_id.", ".$team_admin_id.", 0)";
+	$result_2 = $connection->query($sql);
+	disconnect($connection);
+
+	if($result_1 == true && $result_2 == true){
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 
 // Member Functions
@@ -122,7 +147,7 @@ function get_member_details_by_member_id($member_id){
 
 	$member_details = array();
 	if ($result->num_rows>0) {
-		$team_detail = array();
+		$member_detail = array();
 		while ($row = $result->fetch_assoc()) {
 			$member_detail[] = array(
 				'id' => $row["member_id"],
@@ -130,7 +155,7 @@ function get_member_details_by_member_id($member_id){
 				'last_name' => $row["last_name"],
 				'dob' => $row["official_dob"],
 				'email' => $row["email"],
-				'teams' => get_team_details_by_team_ids(get_team_id_by_member_id($row["member_id"]))
+				'teams' => get_team_details_by_team_ids_and_member_id(get_team_id_by_member_id($row["member_id"]),$row["member_id"])
 			);
 		}
 		$member_details = $member_detail;
@@ -150,5 +175,87 @@ function get_team_id_by_member_id($member_id){
 	}
 	return $team_id;
 }
+function get_team_details_by_team_id_and_member_id($team_id,$member_id){
+	$connection = connect();
+	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_detail_list = array();
+	if ($result->num_rows>0) {
+		$team_detail = "";
+		while ($row = $result->fetch_assoc()) {
+			$team_detail = array(
+				'id' => $row["team_id"],
+				'name' => $row["team_name"],
+				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
+				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
+				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
+			);
+		}
+		$team_detail_list = $team_detail;
+	}
+	return $team_detail_list;
+}
+function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
+	$team_details = array();
+	foreach($team_ids as $team_id){
+		$team_details[] = get_team_details_by_team_id_and_member_id($team_id, $member_id);
+	}
+	return $team_details;
+}
+function is_member($email){
+	$connection = connect();
+	$sql = "SELECT member_id, email FROM team_members WHERE email = '".$email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	while($result->fetch_assoc()){
+		return true;
+	}
+	return false;
+}
+function login_member(Member $member){
+	$username = $member->email;
+	$password = $member->password;
 
-?>
+	$connection = connect();
+	$sql = "SELECT member_id, email, password FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_pass = "";
+	$member_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $username){
+				$member_id = $row["member_id"];
+				$db_pass = $row["password"];
+			}
+		}
+	}
+	if($password == $db_pass){
+		$result = array("logged_in" => true, "status_code" => 200, "member_id" => $member_id);
+	}
+	else{
+		$result = array("logged_in" => false, "status_code"=> 401);
+	}
+
+	return $result;
+}
+function register_new_member(Member $member){
+	if(!is_member($member->email)) {
+		$connection = connect();
+		$sql = "INSERT INTO team_members (member_id, first_name, last_name, email, password, dob, official_dob) VALUES (NULL, '".$member->first_name."', '".$member->last_name."', '".$member->email."' , '".$member->password."', '3000-01-01', '".$member->official_dob."')";
+		$result = $connection->query($sql);
+		disconnect($connection);
+		if($result == true){
+			$result = array("registered" => true, "status_code" => 200);
+		}
+		else{
+			$result = array("registered" => false, "status_code"=> 401, "error" => "Registration failed due to internal error");
+		}
+	}
+	else{
+		$result = array("registered" => false, "status_code"=> 409, "error" => "Member already Registered");
+	}
+	return $result;
+}

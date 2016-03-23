@@ -35,6 +35,23 @@ class Member {
 			break;
 		}
 	}
+
+	public function process_post($action){
+		switch($action){
+			case "login":{
+				$status = login_member($this);
+				return $status;
+			}
+			break;
+			case "register":{
+				$status = register_new_member($this);
+				return $status;
+			}
+			default:{
+
+			}
+			break;
+		}
+	}
 	
 }
-?>
