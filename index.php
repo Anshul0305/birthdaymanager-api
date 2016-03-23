@@ -33,12 +33,15 @@ $team_admin_id = $_POST["team_admin_id"];
 
 //Debug Define
 //$method = "POST";
-//$query = "login";
+//$query = "register";
 //////$subquery = "celebration";
 //$team_name = "Test";
 //$team_admin_id = 1;
-//$email = "anshul@gmail.com";
+//$email = "qa@b.com";
 //$password = "anshul";
+//$official_dob = "2016-01-01";
+//$first_name = "aaa";
+//$last_name = "bbb";
 
 // Handle Methods
 try {
@@ -47,7 +50,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password);
+		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name);
 		show_response($response_code);
 		break;
 	  case 'GET':
@@ -108,7 +111,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -121,7 +124,29 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password){
 			$member_obj = new Member();
 			$member_obj->email = $email;
 			$member_obj->password = $password;
-			return $member_obj->process_post("login");
+			$json_login_result = json_encode($member_obj->process_post("login"));
+			$status_code = json_decode($json_login_result)->status_code;
+			if($status_code == 200){
+				echo $json_login_result;
+			}
+			return $status_code;
+		}
+		break;
+		case "register":{
+			$member_obj = new Member();
+			$member_obj->password = $password;
+			$member_obj->email = $email;
+			$member_obj->official_dob = $official_dob;
+			$member_obj->first_name = $first_name;
+			$member_obj->last_name = $last_name;
+			$json_register_result = json_encode($member_obj->process_post("register"));
+			$status_code = json_decode($json_register_result)->status_code;
+			if($status_code == 200){
+				echo $json_register_result;
+			}
+			else{
+				return $status_code;
+			}
 		}
 		break;
 		default:{
@@ -144,6 +169,10 @@ function show_response($response_code){
 		break;
 		case 401:{
 			header("HTTP/1.1 401");
+		}
+		break;
+		case 409:{
+			header("HTTP/1.1 409");
 		}
 		break;
 		default:{

@@ -39,15 +39,14 @@ class Member {
 	public function process_post($action){
 		switch($action){
 			case "login":{
-				$status = login_user($this->email, $this->password);
-				if($status == true){
-					return 200;
-				}
-				else{
-					return 401;
-				}
+				$status = login_member($this);
+				return $status;
 			}
 			break;
+			case "register":{
+				$status = register_new_member($this);
+				return $status;
+			}
 			default:{
 
 			}

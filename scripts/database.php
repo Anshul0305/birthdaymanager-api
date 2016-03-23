@@ -204,22 +204,58 @@ function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
 	}
 	return $team_details;
 }
-
-
-// Login Functions
-function login_user($username, $password){
+function is_member($email){
 	$connection = connect();
-	$sql = "SELECT email, password FROM team_members";
+	$sql = "SELECT member_id, email FROM team_members WHERE email = '".$email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	while($result->fetch_assoc()){
+		return true;
+	}
+	return false;
+}
+function login_member(Member $member){
+	$username = $member->email;
+	$password = $member->password;
+
+	$connection = connect();
+	$sql = "SELECT member_id, email, password FROM team_members";
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$db_pass = "";
+	$member_id = "";
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
 			if($row["email"] == $username){
+				$member_id = $row["member_id"];
 				$db_pass = $row["password"];
 			}
 		}
 	}
-	$status = ($password == $db_pass)?true:false;
-	return $status;
+	if($password == $db_pass){
+		$result = array("logged_in" => true, "status_code" => 200, "member_id" => $member_id);
+	}
+	else{
+		$result = array("logged_in" => false, "status_code"=> 401);
+	}
+
+	return $result;
+}
+function register_new_member(Member $member){
+	if(!is_member($member->email)) {
+		$connection = connect();
+		$sql = "INSERT INTO team_members (member_id, first_name, last_name, email, password, dob, official_dob) VALUES (NULL, '".$member->first_name."', '".$member->last_name."', '".$member->email."' , '".$member->password."', '3000-01-01', '".$member->official_dob."')";
+		$result = $connection->query($sql);
+		disconnect($connection);
+		if($result == true){
+			$result = array("registered" => true, "status_code" => 200);
+		}
+		else{
+			$result = array("registered" => false, "status_code"=> 401, "error" => "Registration failed due to internal error");
+		}
+	}
+	else{
+		$result = array("registered" => false, "status_code"=> 409, "error" => "Member already Registered");
+	}
+	return $result;
 }
