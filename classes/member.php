@@ -12,6 +12,7 @@ class Member {
 	public $official_dob;
 	public $member_type;
 	public $fund;
+	public $team_id;
 
 	// Gateway to other functions
 	public function process_get($member_id, $subquery){
@@ -45,6 +46,10 @@ class Member {
 			break;
 			case "register":{
 				$status = register_new_member($this);
+				return $status;
+			}
+			case "funds":{
+				$status = post_add_fund($this);
 				return $status;
 			}
 			default:{

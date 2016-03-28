@@ -26,6 +26,7 @@ $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
 $team_name = $_POST["team_name"];
 $team_admin_id = $_POST["team_admin_id"];
+$team_id = $_POST["team_id"];
 
 //Headers
 //header("Access-Control-Allow-Origin: *");
@@ -34,7 +35,7 @@ $team_admin_id = $_POST["team_admin_id"];
 //Debug Define
 //$method = "GET";
 //$query = "members";
-//$val = 1;
+//$val = 67;
 //////$subquery = "celebration";
 //$team_name = "Test";
 //$team_admin_id = 1;
@@ -43,6 +44,9 @@ $team_admin_id = $_POST["team_admin_id"];
 //$official_dob = "2016-01-01";
 //$first_name = "aaa";
 //$last_name = "bbb";
+//$member_id = 1;
+//$team_id = 4;
+//$fund = 100;
 
 // Handle Methods
 try {
@@ -51,7 +55,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name);
+		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund);
 		show_response($response_code);
 		break;
 	  case 'GET':
@@ -112,7 +116,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -148,6 +152,14 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			else{
 				return $status_code;
 			}
+		}
+		break;
+		case "funds":{
+			$member_obj = new Member();
+			$member_obj->member_id = $member_id;
+			$member_obj->team_id = $team_id;
+			$member_obj->fund = $fund;
+			return $member_obj->process_post("funds") == true?200:400;
 		}
 		break;
 		default:{
