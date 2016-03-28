@@ -26,14 +26,16 @@ $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
 $team_name = $_POST["team_name"];
 $team_admin_id = $_POST["team_admin_id"];
+$team_id = $_POST["team_id"];
 
 //Headers
 //header("Access-Control-Allow-Origin: *");
 //header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-//$method = "POST";
-//$query = "register";
+//$method = "GET";
+//$query = "members";
+//$val = 67;
 //////$subquery = "celebration";
 //$team_name = "Test";
 //$team_admin_id = 1;
@@ -42,6 +44,9 @@ $team_admin_id = $_POST["team_admin_id"];
 //$official_dob = "2016-01-01";
 //$first_name = "aaa";
 //$last_name = "bbb";
+//$member_id = 1;
+//$team_id = 4;
+//$fund = 100;
 
 // Handle Methods
 try {
@@ -50,8 +55,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		$response_code = handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name);
-		show_response($response_code);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -64,7 +68,7 @@ try {
 		break;
 	  }
 	}
-catch (Exception $e) {
+	catch (Exception $e) {
 		echo "here";
 }
 
@@ -111,13 +115,15 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
 			$team_obj->team_name = $team_name;
 			$team_obj->admin_id = $team_admin_id;
-			return $team_obj->process_post("create-team");
+			$status_code = $team_obj->process_post("create-team");
+			show_response($status_code);
+			return $status_code;
 		}
 		break;
 		case "login":{
@@ -126,9 +132,8 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->password = $password;
 			$json_login_result = json_encode($member_obj->process_post("login"));
 			$status_code = json_decode($json_login_result)->status_code;
-			if($status_code == 200){
-				echo $json_login_result;
-			}
+			show_response($status_code);
+			echo $json_login_result;
 			return $status_code;
 		}
 		break;
@@ -141,12 +146,19 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->last_name = $last_name;
 			$json_register_result = json_encode($member_obj->process_post("register"));
 			$status_code = json_decode($json_register_result)->status_code;
-			if($status_code == 200){
-				echo $json_register_result;
-			}
-			else{
-				return $status_code;
-			}
+			show_response($status_code);
+			echo $json_register_result;
+			return $status_code;
+		}
+		break;
+		case "funds":{
+			$member_obj = new Member();
+			$member_obj->member_id = $member_id;
+			$member_obj->team_id = $team_id;
+			$member_obj->fund = $fund;
+			$status_code = $member_obj->process_post("funds") == true?200:400;
+			show_response($status_code);
+			return $status_code;
 		}
 		break;
 		default:{

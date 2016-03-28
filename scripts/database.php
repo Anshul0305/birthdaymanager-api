@@ -2,11 +2,12 @@
 
 // General Functions
 function connect(){
-	$servername = 'localhost';
-	$username = 'anshul';
-	$password = 'anshul';
-	$db = 'birthdaymanager';
-	$connection = new mysqli($servername, $username, $password, $db);
+	$env_var = file_get_contents("././env.json");
+	$server_name = json_decode($env_var)->server_name;
+	$username = json_decode($env_var)->db_username;
+	$password = json_decode($env_var)->db_password;
+	$db = json_decode($env_var)->db_name;
+	$connection = new mysqli($server_name, $username, $password, $db);
 	return $connection;
 }
 function disconnect($connection){
@@ -34,9 +35,10 @@ function get_team_details_by_team_id($team_id){
 			$team_detail[] = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
+				'admin_id' => $row["team_admin_id"],
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
-				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
+				'member_id' => get_team_member_id_by_team_id($row["team_id"])
 			);
 		}
 		$team_detail_list = $team_detail;
@@ -65,7 +67,7 @@ function get_team_name_by_team_id($team_id){
 }
 function get_team_member_id_by_team_id($team_id){
 	$connection = connect();
-	$sql = "SELECT team_id, member_id, fund_balance FROM team_teammember WHERE team_id=".$team_id;
+	$sql = "SELECT DISTINCT member_id FROM team_teammember WHERE team_id=".$team_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_member_id = array();
@@ -111,6 +113,20 @@ function get_team_fund_by_team_id($team_id){
 	}
 	return $team_fund_balance;
 }
+function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
+	$connection = connect();
+	$sql = "SELECT sum(fund_balance) as fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$member_fund_balance = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$member_fund_balance = $row["fund_balance"];
+		}
+	}
+	return $member_fund_balance;
+}
+
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
@@ -136,7 +152,16 @@ function post_create_new_team(Team $team){
 		return false;
 	}
 }
-
+function post_add_fund(Member $member){
+	$team_id = $member->team_id;
+	$member_id = $member->member_id;
+	$fund_amount = $member->fund;
+	$connection = connect();
+	$sql = "INSERT INTO team_teammember (`team_team_member_id`, `team_id`, `member_id`, `fund_balance`) VALUES (NULL, '".$team_id."', '".$member_id."', '".$fund_amount."');";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	return $result;
+}
 
 // Member Functions
 function get_member_details_by_member_id($member_id){
@@ -164,7 +189,7 @@ function get_member_details_by_member_id($member_id){
 }
 function get_team_id_by_member_id($member_id){
 	$connection = connect();
-	$sql = "SELECT team_id, fund_balance FROM team_teammember WHERE member_id=".$member_id;
+	$sql = "SELECT DISTINCT team_id FROM team_teammember WHERE member_id=".$member_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_id = array();
@@ -189,7 +214,7 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 				'name' => $row["team_name"],
 				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
-				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
+				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
 			);
 		}
