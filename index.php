@@ -32,8 +32,9 @@ $team_admin_id = $_POST["team_admin_id"];
 //header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-//$method = "POST";
-//$query = "register";
+//$method = "GET";
+//$query = "members";
+//$val = 1;
 //////$subquery = "celebration";
 //$team_name = "Test";
 //$team_admin_id = 1;

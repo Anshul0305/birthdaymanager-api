@@ -34,9 +34,10 @@ function get_team_details_by_team_id($team_id){
 			$team_detail[] = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
+				'admin_id' => $row["team_admin_id"],
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
-				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
+				'member_id' => get_team_member_id_by_team_id($row["team_id"])
 			);
 		}
 		$team_detail_list = $team_detail;
@@ -111,6 +112,21 @@ function get_team_fund_by_team_id($team_id){
 	}
 	return $team_fund_balance;
 }
+
+function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
+	$connection = connect();
+	$sql = "SELECT fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$member_fund_balance = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$member_fund_balance = $row["fund_balance"];
+		}
+	}
+	return $member_fund_balance;
+}
+
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
@@ -189,7 +205,7 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 				'name' => $row["team_name"],
 				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
-				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
+				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
 			);
 		}
