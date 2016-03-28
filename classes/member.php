@@ -48,10 +48,17 @@ class Member {
 				$status = register_new_member($this);
 				return $status;
 			}
+			break;
 			case "funds":{
 				$status = post_add_fund($this);
 				return $status;
 			}
+			break;
+			case "join-team":{
+				$status = join_team($this);
+				return $status;
+			}
+				break;
 			default:{
 
 			}

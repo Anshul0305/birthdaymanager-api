@@ -10,6 +10,9 @@ class Team {
 
 	// Gateway to other functions
 	public function process_get($team_id, $subquery){
+		if($team_id == "search"){
+			return search_teams($subquery);
+		}
 		switch($subquery){
 			case "stub":{
 
