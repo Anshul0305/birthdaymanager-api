@@ -163,6 +163,38 @@ function post_add_fund(Member $member){
 	return $result;
 }
 
+function search_teams($search_term){
+	$connection = connect();
+	$sql = "SELECT team_id, team_name, team_admin_id FROM team WHERE team_name like '%".$search_term."%'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_detail_list = array();
+	if ($result->num_rows>0) {
+		$team_detail = array();
+		while ($row = $result->fetch_assoc()) {
+			$team_detail[] = array(
+				'id' => $row["team_id"],
+				'name' => $row["team_name"],
+				'admin_id' => $row["team_admin_id"],
+				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
+				'member_id' => get_team_member_id_by_team_id($row["team_id"])
+			);
+		}
+		$team_detail_list = $team_detail;
+	}
+	return $team_detail_list;
+}
+function join_team(Member $member ){
+	$team_id = $member->team_id;
+	$member_id = $member->member_id;
+   	$connection = connect();
+	$sql ="INSERT INTO team_teammember (team_team_member_id, team_id, member_id, fund_balance) VALUES (null,".$team_id." ,".$member_id.",'0')";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	return $result;
+}
+
 // Member Functions
 function get_member_details_by_member_id($member_id){
 	$connection = connect();

@@ -34,9 +34,9 @@ $team_id = $_POST["team_id"];
 
 //Debug Define
 //$method = "GET";
-//$query = "members";
-//$val = 67;
-//////$subquery = "celebration";
+//$query = "teams";
+//$val = "search";
+//$subquery = "anshul";
 //$team_name = "Test";
 //$team_admin_id = 1;
 //$email = "qa@b.com";
@@ -157,6 +157,15 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->team_id = $team_id;
 			$member_obj->fund = $fund;
 			$status_code = $member_obj->process_post("funds") == true?200:400;
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "join-team":{
+			$member_obj = new Member();
+			$member_obj->member_id = $member_id;
+			$member_obj->team_id = $team_id;
+			$status_code = $member_obj->process_post("join-team");
 			show_response($status_code);
 			return $status_code;
 		}
