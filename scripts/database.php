@@ -2,11 +2,12 @@
 
 // General Functions
 function connect(){
-	$servername = 'localhost';
-	$username = 'anshul';
-	$password = 'anshul';
-	$db = 'birthdaymanager';
-	$connection = new mysqli($servername, $username, $password, $db);
+	$env_var = file_get_contents("././env.json");
+	$server_name = json_decode($env_var)->server_name;
+	$username = json_decode($env_var)->db_username;
+	$password = json_decode($env_var)->db_password;
+	$db = json_decode($env_var)->db_name;
+	$connection = new mysqli($server_name, $username, $password, $db);
 	return $connection;
 }
 function disconnect($connection){
