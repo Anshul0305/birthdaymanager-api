@@ -16,9 +16,18 @@ class Member {
 
 	// Gateway to other functions
 	public function process_get($member_id, $subquery){
-		if($member_id == "search"){
-			return search_member_by_email($subquery);
+		switch($member_id){
+			case "search":{
+				return search_member_by_email($subquery);
+			}
+			break;
+			case "upcoming-birthdays":{
+				$members = get_upcoming_birthdays();
+				return $members;
+			}
+			break;
 		}
+
 		switch($subquery){
 			case "celebrations":{
 				//$team_member_celebration = get_team_member_celebrations_from_db($id);

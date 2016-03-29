@@ -327,6 +327,31 @@ function search_member_by_email($email){
 	}
 	return $member_details;
 }
+function get_upcoming_birthdays(){
+	$current_month = date('m');
+	$current_date = date('d');
+	$connection = connect();
+	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	$member_details = array();
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$member_detail = array(
+				'id' => $row["member_id"],
+				'first_name' => $row["first_name"],
+				'last_name' => $row["last_name"],
+				'dob' => $row["official_dob"],
+			);
+			$member_details[] = $member_detail;
+		}
+	}
+	usort($member_details, function($a, $b) {
+		return strcmp(date("m-d",strtotime($a['dob'])),date("m-d",strtotime($b['dob'])));
+	});
+	return $member_details;
+}
 
 
 // Fund Functions
