@@ -126,7 +126,6 @@ function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 	}
 	return $member_fund_balance;
 }
-
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
@@ -152,17 +151,6 @@ function post_create_new_team(Team $team){
 		return false;
 	}
 }
-function post_add_fund(Member $member){
-	$team_id = $member->team_id;
-	$member_id = $member->member_id;
-	$fund_amount = $member->fund;
-	$connection = connect();
-	$sql = "INSERT INTO team_teammember (`team_team_member_id`, `team_id`, `member_id`, `fund_balance`) VALUES (NULL, '".$team_id."', '".$member_id."', '".$fund_amount."');";
-	$result = $connection->query($sql);
-	disconnect($connection);
-	return $result;
-}
-
 function search_teams($search_term){
 	$connection = connect();
 	$sql = "SELECT team_id, team_name, team_admin_id FROM team WHERE team_name like '%".$search_term."%'";
@@ -314,5 +302,66 @@ function register_new_member(Member $member){
 	else{
 		$result = array("registered" => false, "status_code"=> 409, "error" => "Member already Registered");
 	}
+	return $result;
+}
+function search_member_by_email($email){
+	$connection = connect();
+	$sql = "SELECT member_id, first_name, last_name, email, official_dob FROM team_members WHERE email = '".$email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	$member_details = array();
+	if ($result->num_rows>0) {
+		$member_detail = array();
+		while ($row = $result->fetch_assoc()) {
+			$member_detail[] = array(
+				'id' => $row["member_id"],
+				'first_name' => $row["first_name"],
+				'last_name' => $row["last_name"],
+				'dob' => $row["official_dob"],
+				'email' => $row["email"],
+				'teams' => get_team_details_by_team_ids_and_member_id(get_team_id_by_member_id($row["member_id"]),$row["member_id"])
+			);
+		}
+		$member_details = $member_detail;
+	}
+	return $member_details;
+}
+function get_upcoming_birthdays(){
+	$current_month = date('m');
+	$current_date = date('d');
+	$connection = connect();
+	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	$member_details = array();
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$member_detail = array(
+				'id' => $row["member_id"],
+				'first_name' => $row["first_name"],
+				'last_name' => $row["last_name"],
+				'dob' => $row["official_dob"],
+			);
+			$member_details[] = $member_detail;
+		}
+	}
+	usort($member_details, function($a, $b) {
+		return strcmp(date("m-d",strtotime($a['dob'])),date("m-d",strtotime($b['dob'])));
+	});
+	return $member_details;
+}
+
+
+// Fund Functions
+function post_add_fund(Member $member){
+	$team_id = $member->team_id;
+	$member_id = $member->member_id;
+	$fund_amount = $member->fund;
+	$connection = connect();
+	$sql = "INSERT INTO team_teammember (`team_team_member_id`, `team_id`, `member_id`, `fund_balance`) VALUES (NULL, '".$team_id."', '".$member_id."', '".$fund_amount."');";
+	$result = $connection->query($sql);
+	disconnect($connection);
 	return $result;
 }

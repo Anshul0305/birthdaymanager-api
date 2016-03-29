@@ -1,4 +1,4 @@
 RewriteEngine On
 RewriteRule ^([A-Za-z0-9-]+)/?$   index.php?query=$1  [NC,L]
-RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$   index.php?query=$1&val=$2  [NC,L]
+RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$   index.php?query=$1&val=$2  [NC,L,QSA]
 RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)?$   index.php?query=$1&val=$2&subquery=$3  [NC,L]
