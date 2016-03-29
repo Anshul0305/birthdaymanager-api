@@ -16,6 +16,9 @@ class Member {
 
 	// Gateway to other functions
 	public function process_get($member_id, $subquery){
+		if($member_id == "search"){
+			return search_member_by_email($subquery);
+		}
 		switch($subquery){
 			case "celebrations":{
 				//$team_member_celebration = get_team_member_celebrations_from_db($id);
@@ -58,7 +61,7 @@ class Member {
 				$status = join_team($this);
 				return $status;
 			}
-				break;
+			break;
 			default:{
 
 			}
