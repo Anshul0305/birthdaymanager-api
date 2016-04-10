@@ -365,3 +365,26 @@ function post_add_fund(Member $member){
 	disconnect($connection);
 	return $result;
 }
+
+
+// Celebrations Functions
+function post_add_celebration(Celebration $celebration){
+	$perhead_contribution = ($celebration->cake_amount + $celebration->other_expense)/($celebration->total_attendees);
+	$connection = connect();
+	$sql_celebration = "INSERT INTO celebrations (celebration_id, team_id, birthday_of_member_id, celebration_date, cake_amount, other_expense, perhead_contribution, total_attendees) VALUES (NULL, '".$celebration->team_id."', '".$celebration->birthday_of_member_id."', '".$celebration->celebration_date."', '".$celebration->cake_amount."', '".$celebration->other_expense."', '".$perhead_contribution."', '".$celebration->total_attendees."')";
+	$result_celebration = $connection->query($sql_celebration);
+	$sql_get_celebration_id = "SELECT celebration_id FROM celebrations ORDER BY celebration_id DESC LIMIT 1";
+	$result_get_celebration_id = $connection->query($sql_get_celebration_id);
+	$celebration_id = "";
+	if ($result_get_celebration_id->num_rows>0) {
+		while ($row = $result_get_celebration_id->fetch_assoc()) {
+			$celebration_id = $row["celebration_id"];
+		}
+	}
+	foreach ($celebration->attendees_member_id_array as $member_id) {
+		$sql_attendees = "INSERT INTO celebration_attendees (celebration_member_key, celebration_id, member_id) VALUES (NULL, '".$celebration_id."', '".$member_id."')";
+		$result_attendees = $connection->query($sql_attendees);
+	}
+	disconnect($connection);
+	return ($result_celebration == true && $result_attendees == true)?true:false;
+}

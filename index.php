@@ -20,7 +20,9 @@ $member_type = $_POST["member_type"];
 $member_id = $_POST["member_id"];
 $fund = $_POST["fund"];
 $cake_amount = $_POST["cake_amount"];
+$other_expense = $_POST["other_expense"];
 $total_attendees = $_POST["total_attendees"];
+$celebration_date = $_POST["celebration_date"];
 $per_head_contribution = $_POST["per_head_contribution"];
 $birthday_of_member_id = $_POST["birthday_of_member_id"];
 $attendees_member_id = $_POST["attendees_member_id"];
@@ -47,6 +49,7 @@ $team_id = $_POST["team_id"];
 //$member_id = 1;
 //$team_id = 4;
 //$fund = 100;
+//$attendees_member_id = [1,2,3,4,5,6,7];
 
 // Handle Methods
 try {
@@ -55,7 +58,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -115,7 +118,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -166,6 +169,21 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->member_id = $member_id;
 			$member_obj->team_id = $team_id;
 			$status_code = $member_obj->process_post("join-team");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+
+		case "celebrations":{
+			$celebration_obj = new Celebration();
+			$celebration_obj->birthday_of_member_id = $birthday_of_member_id;
+			$celebration_obj->cake_amount = $cake_amount;
+			$celebration_obj->other_expense = $other_expense;
+			$celebration_obj->celebration_date = $celebration_date;
+			$celebration_obj->total_attendees = count($attendees_member_id);
+			$celebration_obj->team_id = $team_id;
+			$celebration_obj->attendees_member_id_array = $attendees_member_id;
+			$status_code = $celebration_obj->process_post();
 			show_response($status_code);
 			return $status_code;
 		}
