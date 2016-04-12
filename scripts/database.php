@@ -23,6 +23,19 @@ function return_message($result){
 
 
 // Team Functions
+function get_team_id_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT DISTINCT team_id FROM team_teammember WHERE member_id=".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_id = array();
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_id[] = $row["team_id"];
+		}
+	}
+	return $team_id;
+}
 function get_team_details_by_team_id($team_id){
 	$connection = connect();
 	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
@@ -65,66 +78,34 @@ function get_team_name_by_team_id($team_id){
 	}
 	return $team_name;
 }
-function get_team_member_id_by_team_id($team_id){
+function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	$connection = connect();
-	$sql = "SELECT DISTINCT member_id FROM team_teammember WHERE team_id=".$team_id;
+	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
 	$result = $connection->query($sql);
 	disconnect($connection);
-	$team_member_id = array();
+	$team_detail_list = array();
 	if ($result->num_rows>0) {
+		$team_detail = "";
 		while ($row = $result->fetch_assoc()) {
-			$team_member_id[] = $row["member_id"];
+			$team_detail = array(
+				'id' => $row["team_id"],
+				'name' => $row["team_name"],
+				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
+				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
+				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
+			);
 		}
+		$team_detail_list = $team_detail;
 	}
-	return $team_member_id;
+	return $team_detail_list;
 }
-function get_team_member_name_by_team_member_id($team_member_id){
-	$connection = connect();
-	$sql = "SELECT first_name, last_name FROM team_members WHERE member_id = ". $team_member_id;
-	$result = $connection->query($sql);
-	disconnect($connection);
-	$team_member_first_name = "";
-	$team_member_last_name = "";
-	if ($result->num_rows>0) {
-		while ($row = $result->fetch_assoc()) {
-			$team_member_first_name = $row["first_name"];
-			$team_member_last_name = $row["last_name"];
-		}
+function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
+	$team_details = array();
+	foreach($team_ids as $team_id){
+		$team_details[] = get_team_details_by_team_id_and_member_id($team_id, $member_id);
 	}
-	return $team_member_first_name . " " . $team_member_last_name;
-}
-function get_team_member_name_by_team_member_id_array($team_member_id_array){
-	$team_member_name_array = array();
-	foreach($team_member_id_array as $team_member_id){
-		$team_member_name_array[] = get_team_member_name_by_team_member_id($team_member_id);
-	}
-	return $team_member_name_array;
-}
-function get_team_fund_by_team_id($team_id){
-	$connection = connect();
-	$sql = "SELECT sum(fund_balance) as team_fund_balance FROM team_teammember WHERE team_id=".$team_id." GROUP BY team_id";
-	$result = $connection->query($sql);
-	disconnect($connection);
-	$team_fund_balance = "";
-	if ($result->num_rows>0) {
-		while ($row = $result->fetch_assoc()) {
-			$team_fund_balance = $row["team_fund_balance"];
-		}
-	}
-	return $team_fund_balance;
-}
-function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
-	$connection = connect();
-	$sql = "SELECT sum(fund_balance) as fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
-	$result = $connection->query($sql);
-	disconnect($connection);
-	$member_fund_balance = "";
-	if ($result->num_rows>0) {
-		while ($row = $result->fetch_assoc()) {
-			$member_fund_balance = $row["fund_balance"];
-		}
-	}
-	return $member_fund_balance;
+	return $team_details;
 }
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
@@ -183,6 +164,7 @@ function join_team(Member $member ){
 	return $result;
 }
 
+
 // Member Functions
 function get_member_details_by_member_id($member_id){
 	$connection = connect();
@@ -207,47 +189,40 @@ function get_member_details_by_member_id($member_id){
 	}
 	return $member_details;
 }
-function get_team_id_by_member_id($member_id){
+function get_team_member_id_by_team_id($team_id){
 	$connection = connect();
-	$sql = "SELECT DISTINCT team_id FROM team_teammember WHERE member_id=".$member_id;
+	$sql = "SELECT DISTINCT member_id FROM team_teammember WHERE team_id=".$team_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
-	$team_id = array();
+	$team_member_id = array();
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
-			$team_id[] = $row["team_id"];
+			$team_member_id[] = $row["member_id"];
 		}
 	}
-	return $team_id;
+	return $team_member_id;
 }
-function get_team_details_by_team_id_and_member_id($team_id,$member_id){
+function get_team_member_name_by_team_member_id($team_member_id){
 	$connection = connect();
-	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
+	$sql = "SELECT first_name, last_name FROM team_members WHERE member_id = ". $team_member_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
-	$team_detail_list = array();
+	$team_member_first_name = "";
+	$team_member_last_name = "";
 	if ($result->num_rows>0) {
-		$team_detail = "";
 		while ($row = $result->fetch_assoc()) {
-			$team_detail = array(
-				'id' => $row["team_id"],
-				'name' => $row["team_name"],
-				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
-				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
-				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
-				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
-			);
+			$team_member_first_name = $row["first_name"];
+			$team_member_last_name = $row["last_name"];
 		}
-		$team_detail_list = $team_detail;
 	}
-	return $team_detail_list;
+	return $team_member_first_name . " " . $team_member_last_name;
 }
-function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
-	$team_details = array();
-	foreach($team_ids as $team_id){
-		$team_details[] = get_team_details_by_team_id_and_member_id($team_id, $member_id);
+function get_team_member_name_by_team_member_id_array($team_member_id_array){
+	$team_member_name_array = array();
+	foreach($team_member_id_array as $team_member_id){
+		$team_member_name_array[] = get_team_member_name_by_team_member_id($team_member_id);
 	}
-	return $team_details;
+	return $team_member_name_array;
 }
 function is_member($email){
 	$connection = connect();
@@ -365,9 +340,74 @@ function post_add_fund(Member $member){
 	disconnect($connection);
 	return $result;
 }
-
+function get_team_fund_by_team_id($team_id){
+	$connection = connect();
+	$sql = "SELECT sum(fund_balance) as team_fund_balance FROM team_teammember WHERE team_id=".$team_id." GROUP BY team_id";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_fund_balance = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_fund_balance = $row["team_fund_balance"];
+		}
+	}
+	return $team_fund_balance;
+}
+function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
+	$connection = connect();
+	$sql = "SELECT sum(fund_balance) as fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$member_fund_balance = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$member_fund_balance = $row["fund_balance"];
+		}
+	}
+	return $member_fund_balance;
+}
 
 // Celebrations Functions
+function get_celebrations_by_celebration_id($celebration_id){
+	$connection = connect();
+	$sql = ($celebration_id == "") ? "SELECT celebration_id, team_id, birthday_of_member_id, celebration_date, cake_amount, other_expense, perhead_contribution, total_attendees FROM celebrations" : "SELECT celebration_id, team_id, birthday_of_member_id, celebration_date, cake_amount, other_expense, perhead_contribution, total_attendees FROM celebrations WHERE celebration_id = ".$celebration_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$celebration_list = array();
+	if ($result->num_rows>0) {
+		$celebration = array();
+		while ($row = $result->fetch_assoc()) {
+			$celebration[] = array(
+				'celebration_id' => $row["celebration_id"],
+				'team_id' => $row["team_id"],
+				'birthday_of_member_id' => $row["birthday_of_member_id"],
+				'birthday_of_member_name' => get_team_member_name_by_team_member_id($row["birthday_of_member_id"]),
+				'celebration_date' => $row["celebration_date"],
+				'cake_amount' => $row["cake_amount"],
+				'other_expense' => $row["other_expense"],
+				'perhead_contribution' => $row["perhead_contribution"],
+				'total_attendees' => $row["total_attendees"],
+				'attendees' => get_attendees_by_celebration_id($row["celebration_id"])
+			);
+		}
+		$celebration_list = $celebration;
+	}
+	return $celebration_list;
+}
+function get_attendees_by_celebration_id($celebration_id){
+	$connection = connect();
+	$sql = "SELECT DISTINCT member_id FROM celebration_attendees WHERE celebration_id = ".$celebration_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	if($result->num_rows>0){
+		$attendees = array();
+		while($row = $result->fetch_assoc()){
+			$attendees[] = array("id" => $row["member_id"], "name" => get_team_member_name_by_team_member_id($row["member_id"]));
+		}
+	}
+	return $attendees;
+}
 function post_add_celebration(Celebration $celebration){
 	$perhead_contribution = ($celebration->cake_amount + $celebration->other_expense)/($celebration->total_attendees);
 	$connection = connect();

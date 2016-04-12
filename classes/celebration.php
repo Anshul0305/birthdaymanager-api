@@ -11,8 +11,19 @@ class Celebration{
 	public $attendees_member_id_array;
 	public $perhead_contribution;
 
-	public function process_get($id, $subquery){
+	public function process_get($celebration_id, $subquery){
+		switch($subquery){
+			case "stub":{
 
+			}
+			break;
+
+			default:{
+				$celebrations = get_celebrations_by_celebration_id($celebration_id);
+				return $celebrations;
+			}
+			break;
+		}
 	}
 
 	public function process_post(){
