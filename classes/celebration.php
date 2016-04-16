@@ -27,6 +27,7 @@ class Celebration{
 	}
 
 	public function process_post(){
+		$this->perhead_contribution = ($this->cake_amount + $this->other_expense)/($this->total_attendees);
 		$result = post_add_celebration($this);
 		return $result;
 	}

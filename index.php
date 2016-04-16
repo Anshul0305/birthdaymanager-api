@@ -32,7 +32,7 @@ $team_id = $_POST["team_id"];
 
 //Headers
 //header("Access-Control-Allow-Origin: *");
-//header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
 //$method = "GET";

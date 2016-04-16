@@ -329,6 +329,35 @@ function get_upcoming_birthdays(){
 }
 
 
+// Transactions Functions
+function get_member_transactions_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT `transaction_id`, `team_id`, `transaction_amount`, `transaction_date`, `transaction_type`, `celebration_id` FROM `transactions` WHERE `member_id` = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$transactions = array();
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$transactions[] = $row["transaction_type"] == "debit"? array(
+				'transaction_id' =>$row["transaction_id"],
+				'transaction_type' => $row["transaction_type"],
+				'team_name' => get_team_name_by_team_id($row["team_id"]),
+				'transaction_date' => $row["transaction_date"],
+				'transaction_amount' => $row["transaction_amount"],
+				'birthday_celebration_of' => get_team_member_name_by_team_member_id(get_birthday_of_member_id_by_celebration_id($row["celebration_id"]))
+			):array(
+				'transaction_id' =>$row["transaction_id"],
+				'transaction_type' => $row["transaction_type"],
+				'team_name' => get_team_name_by_team_id($row["team_id"]),
+				'transaction_date' => $row["transaction_date"],
+				'transaction_amount' => $row["transaction_amount"]
+			);
+		}
+	}
+	return $transactions;
+}
+
+
 // Fund Functions
 function post_add_fund(Member $member){
 	$team_id = $member->team_id;
@@ -404,6 +433,19 @@ function get_celebrations_by_celebration_id($celebration_id){
 	}
 	return $celebration_list;
 }
+function get_birthday_of_member_id_by_celebration_id($celebration_id){
+	$connection = connect();
+	$sql = "SELECT birthday_of_member_id FROM celebrations WHERE celebration_id = ".$celebration_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$birthday_of_member_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$birthday_of_member_id = $row["birthday_of_member_id"];
+		}
+	}
+	return $birthday_of_member_id;
+}
 function get_attendees_by_celebration_id($celebration_id){
 	$connection = connect();
 	$sql = "SELECT DISTINCT member_id FROM celebration_attendees WHERE celebration_id = ".$celebration_id;
@@ -419,9 +461,8 @@ function get_attendees_by_celebration_id($celebration_id){
 	return $attendees;
 }
 function post_add_celebration(Celebration $celebration){
-	$perhead_contribution = ($celebration->cake_amount + $celebration->other_expense)/($celebration->total_attendees);
 	$connection = connect();
-	$sql_celebration = "INSERT INTO celebrations (celebration_id, team_id, birthday_of_member_id, celebration_date, cake_amount, other_expense, perhead_contribution, total_attendees) VALUES (NULL, '".$celebration->team_id."', '".$celebration->birthday_of_member_id."', '".$celebration->celebration_date."', '".$celebration->cake_amount."', '".$celebration->other_expense."', '".$perhead_contribution."', '".$celebration->total_attendees."')";
+	$sql_celebration = "INSERT INTO celebrations (celebration_id, team_id, birthday_of_member_id, celebration_date, cake_amount, other_expense, perhead_contribution, total_attendees) VALUES (NULL, '".$celebration->team_id."', '".$celebration->birthday_of_member_id."', '".$celebration->celebration_date."', '".$celebration->cake_amount."', '".$celebration->other_expense."', '".$celebration->perhead_contribution."', '".$celebration->total_attendees."')";
 	$result_celebration = $connection->query($sql_celebration);
 	$sql_get_celebration_id = "SELECT celebration_id FROM celebrations ORDER BY celebration_id DESC LIMIT 1";
 	$result_get_celebration_id = $connection->query($sql_get_celebration_id);
@@ -432,9 +473,18 @@ function post_add_celebration(Celebration $celebration){
 		}
 	}
 	foreach ($celebration->attendees_member_id_array as $member_id) {
+		// Entry in celebration attendees table for all members
 		$sql_attendees = "INSERT INTO celebration_attendees (celebration_member_key, celebration_id, member_id) VALUES (NULL, '".$celebration_id."', '".$member_id."')";
 		$result_attendees = $connection->query($sql_attendees);
+		// Entry in transactions table for all members
+		$transaction_sql = "INSERT INTO `transactions` (`transaction_id`, `transaction_amount`, `member_id`, `team_id`, `transaction_date`, `transaction_type`, `celebration_id`) VALUES (NULL, '".$celebration->perhead_contribution."', '".$member_id."', '".$celebration->team_id."', curdate(), 'debit', '".$celebration_id."' )";
+		$transaction_result = $connection->query($transaction_sql);
+		// Entry in team team members table for fund balance update
+		$current_balance = get_member_fund_by_team_id_and_member_id($celebration->team_id,$member_id);
+		$new_balance = ($current_balance - $celebration->perhead_contribution);
+		$update_sql = "UPDATE `team_teammember` SET `fund_balance`= ".$new_balance." WHERE `team_id`= ".$celebration->team_id." and `member_id`= ".$member_id;
+		$update_result = $connection->query($update_sql);
 	}
 	disconnect($connection);
-	return ($result_celebration == true && $result_attendees == true)?true:false;
+	return ($result_celebration == true && $result_attendees == true && $transaction_result == true && $update_result == true)?true:false;
 }

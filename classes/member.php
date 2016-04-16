@@ -35,9 +35,9 @@ class Member {
 			}
 			break;
 
-			case "funds":{
-				//$team_member_fund = get_team_member_fund_from_db($id);
-				//return $team_member_fund;
+			case "transactions":{
+				$transactions = get_member_transactions_by_member_id($member_id);
+				return $transactions;
 			}
 			break;
 
