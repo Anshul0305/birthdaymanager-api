@@ -335,10 +335,20 @@ function post_add_fund(Member $member){
 	$member_id = $member->member_id;
 	$fund_amount = $member->fund;
 	$connection = connect();
-	$sql = "INSERT INTO team_teammember (`team_team_member_id`, `team_id`, `member_id`, `fund_balance`) VALUES (NULL, '".$team_id."', '".$member_id."', '".$fund_amount."');";
-	$result = $connection->query($sql);
+	$get_fund_sql = "SELECT `fund_balance` FROM `team_teammember` WHERE `team_id` = ".$team_id." and `member_id` = ".$member_id;
+	$fund_result = $connection->query($get_fund_sql);
+	if($fund_result->num_rows>0){
+		while($row = $fund_result->fetch_assoc()){
+			$current_fund_balance = $row["fund_balance"];
+		}
+	}
+	$fund_amount = $current_fund_balance + $fund_amount; // Get existing fund balance and add it to new amount
+	$update_sql = "UPDATE `team_teammember` SET `fund_balance`= ".$fund_amount." WHERE `team_id`= ".$team_id." and `member_id`= ".$member_id;
+	$update_result = $connection->query($update_sql);
+	$transaction_sql = "INSERT INTO `transactions` (`transaction_id`, `transaction_amount`, `member_id`, `team_id`, `transaction_date`, `transaction_type`, `celebration_id`) VALUES (NULL, '".$member->fund."', '".$member_id."', '".$team_id."', curdate(), 'credit', NULL)";
+	$transaction_result = $connection->query($transaction_sql);
 	disconnect($connection);
-	return $result;
+	return ($update_result == true && $transaction_result == true) ? true : false;
 }
 function get_team_fund_by_team_id($team_id){
 	$connection = connect();
@@ -355,7 +365,7 @@ function get_team_fund_by_team_id($team_id){
 }
 function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 	$connection = connect();
-	$sql = "SELECT sum(fund_balance) as fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
+	$sql = "SELECT fund_balance FROM team_teammember WHERE team_id = ".$team_id." and member_id = ".$member_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$member_fund_balance = "";

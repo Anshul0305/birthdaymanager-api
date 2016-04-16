@@ -35,8 +35,8 @@ $team_id = $_POST["team_id"];
 //header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-$method = "GET";
-$query = "celebrations";
+//$method = "GET";
+//$query = "celebrations";
 //$val = "search";
 //$subquery = "anshul";
 //$team_name = "Test";
