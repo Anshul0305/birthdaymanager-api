@@ -51,7 +51,7 @@ function get_team_details_by_team_id($team_id){
 				'admin_id' => $row["team_admin_id"],
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
-				'member_id' => get_team_member_id_by_team_id($row["team_id"])
+				'members' => get_team_member_id_by_team_id($row["team_id"]),
 			);
 		}
 		$team_detail_list = $team_detail;
@@ -197,7 +197,7 @@ function get_team_member_id_by_team_id($team_id){
 	$team_member_id = array();
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
-			$team_member_id[] = $row["member_id"];
+			$team_member_id[] = array('id' => $row["member_id"],'name'=> get_team_member_name_by_team_member_id($row["member_id"]));
 		}
 	}
 	return $team_member_id;
