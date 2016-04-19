@@ -36,9 +36,9 @@ header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
 //$method = "GET";
-//$query = "celebrations";
-//$val = "search";
-//$subquery = "anshul";
+//$query = "members";
+//$val = "10";
+//$subquery = "celebrations";
 //$team_name = "Test";
 //$team_admin_id = 1;
 //$email = "qa@b.com";

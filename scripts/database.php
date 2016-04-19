@@ -79,6 +79,7 @@ function get_team_name_by_team_id($team_id){
 	return $team_name;
 }
 function get_team_details_by_team_id_and_member_id($team_id,$member_id){
+	// This function checks if a member is admin of a team or not
 	$connection = connect();
 	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
 	$result = $connection->query($sql);
@@ -220,7 +221,7 @@ function get_team_member_name_by_team_member_id($team_member_id){
 function get_team_member_name_by_team_member_id_array($team_member_id_array){
 	$team_member_name_array = array();
 	foreach($team_member_id_array as $team_member_id){
-		$team_member_name_array[] = get_team_member_name_by_team_member_id($team_member_id);
+		$team_member_name_array[] = get_team_member_name_by_team_member_id($team_member_id["id"]);
 	}
 	return $team_member_name_array;
 }
@@ -406,6 +407,7 @@ function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 	return $member_fund_balance;
 }
 
+
 // Celebrations Functions
 function get_celebrations_by_celebration_id($celebration_id){
 	$connection = connect();
@@ -419,6 +421,7 @@ function get_celebrations_by_celebration_id($celebration_id){
 			$celebration[] = array(
 				'celebration_id' => $row["celebration_id"],
 				'team_id' => $row["team_id"],
+				'team_name' => get_team_name_by_team_id($row["team_id"]),
 				'birthday_of_member_id' => $row["birthday_of_member_id"],
 				'birthday_of_member_name' => get_team_member_name_by_team_member_id($row["birthday_of_member_id"]),
 				'celebration_date' => $row["celebration_date"],
@@ -487,4 +490,17 @@ function post_add_celebration(Celebration $celebration){
 	}
 	disconnect($connection);
 	return ($result_celebration == true && $result_attendees == true && $transaction_result == true && $update_result == true)?true:false;
+}
+function get_celebrations_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT `celebration_id` FROM `celebration_attendees` WHERE `member_id` = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	if ($result->num_rows>0) {
+		$celebration = array();
+		while ($row = $result->fetch_assoc()) {
+			$celebration[] = get_celebrations_by_celebration_id($row["celebration_id"])[0];
+		}
+	}
+	return $celebration;
 }

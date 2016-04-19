@@ -30,8 +30,8 @@ class Member {
 
 		switch($subquery){
 			case "celebrations":{
-				//$team_member_celebration = get_team_member_celebrations_from_db($id);
-				//return $team_member_celebration;
+				$team_member_celebration = get_celebrations_by_member_id($member_id);
+				return $team_member_celebration;
 			}
 			break;
 
