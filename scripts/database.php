@@ -112,7 +112,7 @@ function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
 	$connection = connect();
-	$sql = "INSERT INTO team (team_id, team_name, team_admin_id) VALUES (NULL,'".$team_name."',".$team_admin_id.")";
+	$sql = "INSERT INTO team (team_id, team_name, team_admin_id) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).")";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
 	$result = $connection->query($sql);
@@ -503,4 +503,10 @@ function get_celebrations_by_member_id($member_id){
 		}
 	}
 	return $celebration;
+}
+
+
+// Other Functions
+function sanitize($data){
+	return str_replace("'","''",$data);
 }
