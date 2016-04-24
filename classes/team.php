@@ -44,5 +44,9 @@ class Team {
 			break;
 		}
 	}
+
+	public function process_delete($team_id){
+		delete_team($team_id);
+	}
 	
 }

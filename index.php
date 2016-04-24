@@ -37,7 +37,7 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 //$method = "GET";
 //$query = "members";
-//$val = "10";
+//$val = "1";
 //$subquery = "celebrations";
 //$team_name = "Test";
 //$team_admin_id = 1;
@@ -174,6 +174,15 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 		}
 		break;
 
+		case "leave-team":{
+			$member_obj = new Member();
+			$member_obj->member_id = $member_id;
+			$member_obj->team_id = $team_id;
+			$status_code = $member_obj->process_post("leave-team");
+			show_response($status_code);
+			return $status_code;
+		}
+
 		case "celebrations":{
 			$celebration_obj = new Celebration();
 			$celebration_obj->birthday_of_member_id = $birthday_of_member_id;
@@ -192,6 +201,22 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 
 		}
 		break;
+	}
+}
+
+// Handle Delete Request
+function handle_delete($query,$val){
+	switch($query) {
+		case "teams": {
+			$team = new Team();
+			$status = $team->process_delete($val);
+			return $status;
+		}
+		break;
+
+		default: {
+
+		}
 	}
 }
 

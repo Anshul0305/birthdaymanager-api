@@ -71,6 +71,10 @@ class Member {
 				return $status;
 			}
 			break;
+			case "leave-team":{
+				$status = leave_team($this);
+				return $status;
+			}
 			default:{
 
 			}

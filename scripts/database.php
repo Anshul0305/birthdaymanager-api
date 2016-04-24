@@ -23,6 +23,20 @@ function return_message($result){
 
 
 // Team Functions
+
+function is_team_deleted($team_id){
+	$connection = connect();
+	$sql = "SELECT deleted FROM team WHERE team_id=".$team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$deleted = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$deleted = $row["deleted"];
+		}
+	}
+	return ($deleted == 1)?true:false;
+}
 function get_team_id_by_member_id($member_id){
 	$connection = connect();
 	$sql = "SELECT DISTINCT team_id FROM team_teammember WHERE member_id=".$member_id;
@@ -31,14 +45,16 @@ function get_team_id_by_member_id($member_id){
 	$team_id = array();
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
-			$team_id[] = $row["team_id"];
+			if(!is_team_deleted($row["team_id"])){
+				$team_id[] = $row["team_id"];
+			}
 		}
 	}
 	return $team_id;
 }
 function get_team_details_by_team_id($team_id){
 	$connection = connect();
-	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
+	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_id = ". $team_id);
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_detail_list = array();
@@ -76,12 +92,15 @@ function get_team_name_by_team_id($team_id){
 			$team_name = $row["team_name"];
 		}
 	}
+	if(is_team_deleted($team_id)){
+		$team_name = $team_name." (Deleted)";
+	}
 	return $team_name;
 }
 function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	// This function checks if a member is admin of a team or not
 	$connection = connect();
-	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE team_id = ". $team_id);
+	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team where deleted = 0") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_id = ". $team_id);
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_detail_list = array();
@@ -112,7 +131,7 @@ function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
 	$connection = connect();
-	$sql = "INSERT INTO team (team_id, team_name, team_admin_id) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).")";
+	$sql = "INSERT INTO team (team_id, team_name, team_admin_id, deleted) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).",0)";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
 	$result = $connection->query($sql);
@@ -135,7 +154,7 @@ function post_create_new_team(Team $team){
 }
 function search_teams($search_term){
 	$connection = connect();
-	$sql = "SELECT team_id, team_name, team_admin_id FROM team WHERE team_name like '%".$search_term."%'";
+	$sql = "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_name like '%".$search_term."%'";
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_detail_list = array();
@@ -160,6 +179,22 @@ function join_team(Member $member ){
 	$member_id = $member->member_id;
    	$connection = connect();
 	$sql ="INSERT INTO team_teammember (team_team_member_id, team_id, member_id, fund_balance) VALUES (null,".$team_id." ,".$member_id.",'0')";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	return $result;
+}
+function leave_team(Member $member){
+	$team_id = $member->team_id;
+	$member_id = $member->member_id;
+	$connection = connect();
+	$sql ="DELETE FROM `team_teammember` WHERE `team_id` = ".$team_id." and `member_id` = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	return $result;
+}
+function delete_team($team_id){
+	$connection = connect();
+	$sql = "UPDATE `team` SET `deleted`=1 WHERE team_id=".$team_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
 	return $result;
