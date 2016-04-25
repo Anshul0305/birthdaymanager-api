@@ -31,12 +31,12 @@ $team_admin_id = $_POST["team_admin_id"];
 $team_id = $_POST["team_id"];
 
 //Headers
-//header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
 //$method = "POST";
-//$query = "reset-password-link";
+//$query = "teams";
 //$val = "1";
 //$subquery = "celebrations";
 //$team_name = "Test";
