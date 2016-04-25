@@ -1,6 +1,7 @@
 <?php
 require_once('././scripts/database.php');
 require_once('././scripts/auth.php');
+require_once('././scripts/mailer.php');
 
 class Member {
 	public $member_id;
@@ -13,6 +14,7 @@ class Member {
 	public $member_type;
 	public $fund;
 	public $team_id;
+	public $reset_code;
 
 	// Gateway to other functions
 	public function process_get($member_id, $subquery){
@@ -53,6 +55,17 @@ class Member {
 		switch($action){
 			case "login":{
 				$status = login_member($this);
+				return $status;
+			}
+			break;
+			case "reset-password-link":{
+				$status = get_reset_password_code($this);
+				send_password_reset_code($this);
+				return $status;
+			}
+			break;
+			case "reset-password":{
+				$status = reset_password($this);
 				return $status;
 			}
 			break;

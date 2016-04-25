@@ -35,13 +35,13 @@ $team_id = $_POST["team_id"];
 header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-//$method = "GET";
-//$query = "members";
+//$method = "POST";
+//$query = "reset-password-link";
 //$val = "1";
 //$subquery = "celebrations";
 //$team_name = "Test";
 //$team_admin_id = 1;
-//$email = "qa@b.com";
+//$email = "anshul.shrivastava123@gmail.com";
 //$password = "anshul";
 //$official_dob = "2016-01-01";
 //$first_name = "aaa";
@@ -140,6 +140,25 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			return $status_code;
 		}
 		break;
+		case "reset-password-link":{
+			$member_obj = new Member();
+			$member_obj->email = $email;
+			$json_result = json_encode($member_obj->process_post("reset-password-link"));
+			$status_code = json_decode($json_result)->status_code;
+			show_response($status_code);
+			echo $json_result;
+			return $status_code;
+		}
+		case "reset-password":{
+			$member_obj = new Member();
+			$member_obj->email = $email;
+			$json_login_result = json_encode($member_obj->process_post("reset-password"));
+			$status_code = json_decode($json_login_result)->status_code;
+			show_response($status_code);
+			echo $json_login_result;
+			return $status_code;
+		}
+			break;
 		case "register":{
 			$member_obj = new Member();
 			$member_obj->password = $password;

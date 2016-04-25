@@ -273,7 +273,49 @@ function is_member($email){
 function login_member(Member $member){
 	$username = $member->email;
 	$password = $member->password;
+	$connection = connect();
+	$sql = "SELECT member_id, email, password FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_pass = "";
+	$member_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $username){
+				$member_id = $row["member_id"];
+				$db_pass = $row["password"];
+			}
+		}
+	}
+	if($password == $db_pass){
+		$result = array("logged_in" => true, "status_code" => 200, "member_id" => $member_id);
+	}
+	else{
+		$result = array("logged_in" => false, "status_code"=> 401);
+	}
 
+	return $result;
+}
+function get_reset_password_code(Member $member){
+	$email = $member->email;
+	$connection = connect();
+	$sql = "SELECT email, reset_code FROM team_members Where email = '".$email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$q_result =  array("message" => "Invalid Email Id", "status_code"=> 400);
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $email){
+				$reset_code = $row["reset_code"];
+				$q_result =  array("email" => $email, "status_code"=>200, "reset_code"=> $reset_code);
+			}
+		}
+	}
+	return $q_result;
+}
+function reset_password(Member $member){
+	$username = $member->email;
+	$password = $member->password;
 	$connection = connect();
 	$sql = "SELECT member_id, email, password FROM team_members";
 	$result = $connection->query($sql);
