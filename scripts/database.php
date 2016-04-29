@@ -253,6 +253,19 @@ function get_team_member_name_by_team_member_id($team_member_id){
 	}
 	return $team_member_first_name . " " . $team_member_last_name;
 }
+function get_team_member_name_by_email($email){
+	$connection = connect();
+	$sql = "SELECT first_name FROM team_members WHERE email = '". $email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_first_name = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_first_name = $row["first_name"];
+		}
+	}
+	return $team_member_first_name;
+}
 function get_team_member_name_by_team_member_id_array($team_member_id_array){
 	$team_member_name_array = array();
 	foreach($team_member_id_array as $team_member_id){
@@ -314,35 +327,44 @@ function get_reset_password_code(Member $member){
 	return $q_result;
 }
 function reset_password(Member $member){
-	$username = $member->email;
-	$password = $member->password;
+	$email = $member->email;
+	$password1 = $member->reset_password1;
+	$password2 = $member->reset_password2;
+	$reset_code = $member->reset_code;
 	$connection = connect();
-	$sql = "SELECT member_id, email, password FROM team_members";
+	$sql = "SELECT member_id, email, reset_code FROM team_members where email='".$email."'";
 	$result = $connection->query($sql);
-	disconnect($connection);
-	$db_pass = "";
+	$db_reset_code = "";
 	$member_id = "";
-	if ($result->num_rows>0) {
-		while ($row = $result->fetch_assoc()) {
-			if($row["email"] == $username){
-				$member_id = $row["member_id"];
-				$db_pass = $row["password"];
+	if($password1 != $password2){
+		$q_result = array("message" => "Password do not match", "status_code"=> 409);
+	}
+	else {
+		if ($result->num_rows > 0) {
+			while ($row = $result->fetch_assoc()) {
+				if ($row["email"] == $email) {
+					$member_id = $row["member_id"];
+					$db_reset_code = $row["reset_code"];
+				}
 			}
+			if ($reset_code == $db_reset_code) {
+				$sql = "UPDATE `team_members` SET `password`='" . $password1 . "', reset_code='".get_uuid()."' WHERE `email` = '" . $email . "'";
+				$connection->query($sql);
+				$q_result = array("message" => "password updated", "status_code" => 200, "member_id" => $member_id);
+			} else {
+				$q_result = array("message" => "invalid reset code", "status_code" => 401);
+			}
+		} else {
+			$q_result = array("message" => "invalid reset code", "status_code" => 401);
 		}
 	}
-	if($password == $db_pass){
-		$result = array("logged_in" => true, "status_code" => 200, "member_id" => $member_id);
-	}
-	else{
-		$result = array("logged_in" => false, "status_code"=> 401);
-	}
-
-	return $result;
+	disconnect($connection);
+	return $q_result;
 }
 function register_new_member(Member $member){
 	if(!is_member($member->email)) {
 		$connection = connect();
-		$sql = "INSERT INTO team_members (member_id, first_name, last_name, email, password, dob, official_dob) VALUES (NULL, '".$member->first_name."', '".$member->last_name."', '".$member->email."' , '".$member->password."', '3000-01-01', '".$member->official_dob."')";
+		$sql = "INSERT INTO team_members (member_id, first_name, last_name, email, password, dob, official_dob, reset_code) VALUES (NULL, '".$member->first_name."', '".$member->last_name."', '".$member->email."' , '".$member->password."', '3000-01-01', '".$member->official_dob."','".get_uuid()."')";
 		$result = $connection->query($sql);
 		disconnect($connection);
 		if($result == true){
@@ -586,4 +608,7 @@ function get_celebrations_by_member_id($member_id){
 // Other Functions
 function sanitize($data){
 	return str_replace("'","''",$data);
+}
+function get_uuid(){
+	return file_get_contents("https://www.uuidgenerator.net/api/version1");
 }

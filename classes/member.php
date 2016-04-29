@@ -15,6 +15,14 @@ class Member {
 	public $fund;
 	public $team_id;
 	public $reset_code;
+	public $reset_password_link;
+	public $reset_password1;
+	public $reset_password2;
+
+	public function __construct()
+	{
+
+	}
 
 	// Gateway to other functions
 	public function process_get($member_id, $subquery){
@@ -60,7 +68,12 @@ class Member {
 			break;
 			case "reset-password-link":{
 				$status = get_reset_password_code($this);
-				send_password_reset_code($this);
+				if($status["status_code"]==200) {
+					$this->first_name = get_team_member_name_by_email($this->email);
+					$this->reset_code = $status["reset_code"];
+					$this->reset_password_link = json_decode(file_get_contents("env.json"))->website_host."/reset-password.php?code=" . $this->reset_code . "&email=" . $this->email;
+					send_password_reset_code($this);
+				}
 				return $status;
 			}
 			break;
@@ -71,11 +84,13 @@ class Member {
 			break;
 			case "register":{
 				$status = register_new_member($this);
+				send_registration_success_email($this);
 				return $status;
 			}
 			break;
 			case "funds":{
 				$status = post_add_fund($this);
+				send_add_fund_email($this);
 				return $status;
 			}
 			break;

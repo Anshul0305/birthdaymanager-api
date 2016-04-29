@@ -29,27 +29,36 @@ $attendees_member_id = $_POST["attendees_member_id"];
 $team_name = $_POST["team_name"];
 $team_admin_id = $_POST["team_admin_id"];
 $team_id = $_POST["team_id"];
+$reset_code = $_POST["reset_code"];
+$password1 = $_POST["password1"];
+$password2 = $_POST["password2"];
 
 //Headers
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-//$method = "POST";
-//$query = "teams";
-//$val = "1";
-//$subquery = "celebrations";
-//$team_name = "Test";
-//$team_admin_id = 1;
-//$email = "anshul.shrivastava123@gmail.com";
-//$password = "anshul";
-//$official_dob = "2016-01-01";
-//$first_name = "aaa";
-//$last_name = "bbb";
-//$member_id = 1;
-//$team_id = 4;
-//$fund = 100;
-//$attendees_member_id = [1,2,3,4,5,6,7];
+$enable_debug=false;
+if($enable_debug==true) {
+	$method = "POST";
+	$query = "reset-password";
+	$val = "1";
+	$subquery = "celebrations";
+	$team_name = "Test";
+	$team_admin_id = 1;
+	$email = "anshul.shrivastava123@gmail.com";
+	$password = "anshul";
+	$official_dob = "2016-01-01";
+	$first_name = "aaa";
+	$last_name = "bbb";
+	$member_id = 1;
+	$team_id = 4;
+	$fund = 100;
+	$attendees_member_id = [1, 2, 3, 4, 5, 6, 7];
+	$reset_code = "1234";
+	$password1 = "anshul";
+	$password2 = "anshul";
+}
 
 // Handle Methods
 try {
@@ -58,7 +67,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -118,7 +127,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -152,6 +161,9 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 		case "reset-password":{
 			$member_obj = new Member();
 			$member_obj->email = $email;
+			$member_obj->reset_code = $reset_code;
+			$member_obj->reset_password1 = $password1;
+			$member_obj->reset_password2 = $password2;
 			$json_login_result = json_encode($member_obj->process_post("reset-password"));
 			$status_code = json_decode($json_login_result)->status_code;
 			show_response($status_code);

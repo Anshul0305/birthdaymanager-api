@@ -21,10 +21,21 @@ function email_init(){
 }
 
 function send_password_reset_code(Member $member){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/reset_password_link.php');
   $mail = email_init();
-  $mail->addAddress("anshul.shrivastava123@gmail.com");
-  $mail->Subject = "Password Reset Code";
-  $GLOBALS['enable_email']==true?$mail->send():"";
+  $mail->addAddress($member->email);
+  $mail->Subject = "Password Reset Code - Online Birthday Manager";
+  $body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{reset_password_link}",$member->reset_password_link, $body);
+  $mail->Body = $body;
+  if($mail->send()){
+    error_log("email sent");
+  }
+  else{
+    error_log("mail not sent");
+    error_log($mail->ErrorInfo);
+  }
+
 }
 
 function send_registration_success_email(Member $member){
