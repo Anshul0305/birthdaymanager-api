@@ -14,6 +14,7 @@ class Member {
 	public $member_type;
 	public $fund;
 	public $team_id;
+	public $team_name;
 	public $reset_code;
 	public $reset_password_link;
 	public $reset_password1;
@@ -84,7 +85,13 @@ class Member {
 			break;
 			case "register":{
 				$status = register_new_member($this);
-				send_registration_success_email($this);
+				if($status["status_code"]==200){
+					if($this->team_id!="" && $this->team_name == get_team_name_by_team_id($this->team_id)){
+						$this->member_id = get_team_member_id_by_email($this->email);
+						join_team($this);
+					}
+					send_registration_success_email($this);
+				}
 				return $status;
 			}
 			break;

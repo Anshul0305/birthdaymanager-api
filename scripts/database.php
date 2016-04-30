@@ -266,6 +266,19 @@ function get_team_member_name_by_email($email){
 	}
 	return $team_member_first_name;
 }
+function get_team_member_id_by_email($email){
+	$connection = connect();
+	$sql = "SELECT member_id FROM team_members WHERE email = '". $email."'";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_id = $row["member_id"];
+		}
+	}
+	return $team_member_id;
+}
 function get_team_member_name_by_team_member_id_array($team_member_id_array){
 	$team_member_name_array = array();
 	foreach($team_member_id_array as $team_member_id){

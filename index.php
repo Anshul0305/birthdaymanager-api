@@ -41,9 +41,9 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "reset-password";
-	$val = "1";
-	$subquery = "celebrations";
+	$query = "register";
+	//$val = "1";
+	//$subquery = "celebrations";
 	$team_name = "Test";
 	$team_admin_id = 1;
 	$email = "anshul.shrivastava123@gmail.com";
@@ -178,6 +178,8 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->official_dob = $official_dob;
 			$member_obj->first_name = $first_name;
 			$member_obj->last_name = $last_name;
+			$member_obj->team_id = $team_id;
+			$member_obj->team_name = $team_name;
 			$json_register_result = json_encode($member_obj->process_post("register"));
 			$status_code = json_decode($json_register_result)->status_code;
 			show_response($status_code);
