@@ -238,6 +238,19 @@ function get_team_member_id_by_team_id($team_id){
 	}
 	return $team_member_id;
 }
+function get_team_member_id_only_by_team_id($team_id){
+	$connection = connect();
+	$sql = "SELECT DISTINCT member_id FROM team_teammember WHERE team_id=".$team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_id = array();
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_id[] = $row["member_id"];
+		}
+	}
+	return $team_member_id;
+}
 function get_team_member_name_by_team_member_id($team_member_id){
 	$connection = connect();
 	$sql = "SELECT first_name, last_name FROM team_members WHERE member_id = ". $team_member_id;
@@ -415,11 +428,12 @@ function search_member_by_email($email){
 	}
 	return $member_details;
 }
-function get_upcoming_birthdays(){
+function get_upcoming_birthdays($member_id){
 	$current_month = date('m');
 	$current_date = date('d');
 	$connection = connect();
-	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
+	$members = get_members_for_upcoming_birthday($member_id);
+	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE member_id in (".implode(',',$members).") and (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
 	$result = $connection->query($sql);
 	disconnect($connection);
 
@@ -439,6 +453,18 @@ function get_upcoming_birthdays(){
 		return strcmp(date("m-d",strtotime($a['dob'])),date("m-d",strtotime($b['dob'])));
 	});
 	return $member_details;
+}
+
+function get_members_for_upcoming_birthday($member_id){
+	$team_ids = get_team_id_by_member_id($member_id);
+	$members = array();
+	foreach ($team_ids as $team_id) {
+		$member_ids = get_team_member_id_only_by_team_id($team_id);
+		foreach ($member_ids as $member_id){
+			array_push($members,$member_id);
+		}
+	}
+	return array_unique($members);
 }
 
 

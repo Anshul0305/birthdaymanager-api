@@ -40,10 +40,10 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "POST";
-	$query = "register";
-	//$val = "1";
-	//$subquery = "celebrations";
+	$method = "GET";
+	$query = "members";
+	$val = "1";
+	$subquery = "upcoming-birthdays";
 	$team_name = "Test";
 	$team_admin_id = 1;
 	$email = "anshul.shrivastava123@gmail.com";

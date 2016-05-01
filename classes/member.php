@@ -33,11 +33,6 @@ class Member {
 				return search_member_by_email($subquery);
 			}
 			break;
-			case "upcoming-birthdays":{
-				$members = get_upcoming_birthdays();
-				return $members;
-			}
-			break;
 		}
 
 		switch($subquery){
@@ -50,6 +45,12 @@ class Member {
 			case "transactions":{
 				$transactions = get_member_transactions_by_member_id($member_id);
 				return $transactions;
+			}
+			break;
+
+			case "upcoming-birthdays":{
+				$members = get_upcoming_birthdays($member_id);
+				return $members;
 			}
 			break;
 
