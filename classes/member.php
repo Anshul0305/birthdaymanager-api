@@ -17,6 +17,7 @@ class Member {
 	public $team_name;
 	public $reset_code;
 	public $reset_password_link;
+	public $invite_team_link;
 	public $reset_password1;
 	public $reset_password2;
 
@@ -108,6 +109,12 @@ class Member {
 			break;
 			case "leave-team":{
 				$status = leave_team($this);
+				return $status;
+			}
+			case "invite":{
+				$this->team_name = get_team_name_by_team_id($this->team_id);
+				$this->invite_team_link = json_decode(file_get_contents("env.json"))->website_host."/index.php?team-id=" . $this->team_id . "&team-name=" . urlencode($this->team_name);
+				$status = invite_to_team($this);
 				return $status;
 			}
 			default:{

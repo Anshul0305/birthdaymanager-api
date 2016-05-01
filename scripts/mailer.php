@@ -35,7 +35,6 @@ function send_password_reset_code(Member $member){
     error_log("mail not sent");
     error_log($mail->ErrorInfo);
   }
-
 }
 
 function send_registration_success_email(Member $member){
@@ -72,4 +71,22 @@ function send_add_fund_email(Member $member){
   $mail->Subject = 'Fund Added - Online Birthday Manager';
   $mail->Body = str_replace("{first_name}",$member->first_name, $template);
   $GLOBALS['enable_email']==true?$mail->send():"";
+}
+
+function invite_to_team(Member $member){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/invite_to_team.php');
+  $mail = email_init();
+  $mail->addAddress($member->email);
+  $mail->Subject = "Invitation to Join ".$member->team_name." - Online Birthday Manager";
+  $body = str_replace("{email}",$member->email, $template);
+  $body = str_replace("{team_name}",$member->team_name, $body);
+  $body = str_replace("{invite_to_team_link}",$member->invite_team_link, $body);
+  $mail->Body = $body;
+  if($mail->send()){
+    error_log("email sent");
+  }
+  else{
+    error_log("mail not sent");
+    error_log($mail->ErrorInfo);
+  }
 }

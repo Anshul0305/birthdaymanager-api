@@ -216,6 +216,16 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			return $status_code;
 		}
 
+		case "invite":{
+			$member_obj = new Member();
+			$member_obj->email = $email;
+			$member_obj->team_id = $team_id;
+			$status_code = $member_obj->process_post("invite");
+			show_response($status_code);
+			return $status_code;
+		}
+			break;
+
 		case "celebrations":{
 			$celebration_obj = new Celebration();
 			$celebration_obj->birthday_of_member_id = $birthday_of_member_id;
