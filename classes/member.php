@@ -20,6 +20,7 @@ class Member {
 	public $invite_team_link;
 	public $reset_password1;
 	public $reset_password2;
+	public $birthday_members = array();
 
 	public function __construct()
 	{
@@ -31,6 +32,18 @@ class Member {
 		switch($member_id){
 			case "search":{
 				return search_member_by_email($subquery);
+			}
+			break;
+			case "weekly":{
+				$admin_ids = get_all_admin_ids();
+				foreach ($admin_ids as $member_id) {
+					$members = get_upcoming_birthdays($member_id);
+					$this->member_id = $member_id;
+					$this->email = get_team_member_email_by_id($member_id);
+					$this->first_name = get_team_member_name_by_team_member_id($member_id);
+					$this->birthday_members = $members;
+					send_weekly_birthday_alert($this);
+				}
 			}
 			break;
 		}

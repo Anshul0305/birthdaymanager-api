@@ -41,9 +41,9 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "GET";
-	$query = "members";
-	$val = "1";
-	$subquery = "upcoming-birthdays";
+	$query = "cron";
+	$val = "weekly";
+	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
 	$email = "anshul.shrivastava123@gmail.com";
@@ -115,12 +115,18 @@ function handle_get($query,$val,$subquery){
 		echo json_encode($celebration_list);
 	}
 	break;
+
+	case "cron":{
+		$member = new Member();
+		$member->process_get($val, $subquery);
+		echo "CRON Job executed!";
+	}
+	break;
 	
 	default: {
 		$default=array();
 		$default['Birthday_Manager'] = array('Version' => '1.0', 'Query' =>$query);
 		echo json_encode($default);
-
 	}
 }
 	

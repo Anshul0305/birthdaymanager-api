@@ -21,6 +21,31 @@ function return_message($result){
 	}
 }
 
+function query_sql($sql){
+	$connection=connect();
+	$result=$connection->query($sql);
+	disconnect($connection);
+	return$result;
+}
+
+function template(){
+	$result=query_sql("");
+	$admin_id=array();
+	while($row=$result->fetch_assoc()){
+		$admin_id[]=$row[""];
+	}
+	return$admin_id;
+}
+
+function get_all_admin_ids(){
+	$sql="SELECT`team_admin_id`FROM`team`WHERE`deleted`!=1";
+	$result=query_sql($sql);
+	$admin_id=array();
+	while($row=$result->fetch_assoc()){
+		$admin_id[]=$row["team_admin_id"];
+	}
+	return$admin_id;
+}
 
 // Team Functions
 
@@ -291,6 +316,19 @@ function get_team_member_id_by_email($email){
 		}
 	}
 	return $team_member_id;
+}
+function get_team_member_email_by_id($member_id){
+	$connection = connect();
+	$sql = "SELECT email FROM team_members WHERE member_id = ". $member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_email = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_email = $row["email"];
+		}
+	}
+	return $team_member_email;
 }
 function get_team_member_name_by_team_member_id_array($team_member_id_array){
 	$team_member_name_array = array();

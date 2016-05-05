@@ -90,3 +90,30 @@ function invite_to_team(Member $member){
     error_log($mail->ErrorInfo);
   }
 }
+
+function send_weekly_birthday_alert(Member $member){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/cron_weekly.php');
+  $mail = email_init();
+  $mail->addAddress($member->email);
+  $mail->Subject = "Upcoming Birthdays - Online Birthday Manager";
+  $body = str_replace("{first_name}", $member->first_name, $template);
+  $body = str_replace("{body}", "<table>{body}", $body);
+  foreach ($member->birthday_members as $birthday_member) {
+    $date = date("d M", strtotime($birthday_member["dob"]));
+    $day = date("D", strtotime(date("d M", strtotime($birthday_member["dob"]))));
+    $body = str_replace("{body}", "<tr>{body}", $body);
+    $body = str_replace("{body}", "<td>{body}", $body);
+    $body = str_replace("{body}", $birthday_member["first_name"]." ".$birthday_member["last_name"]."</td><td>".$date ." (".$day.")" . "</td>"."{body}", $body);
+    $body = str_replace("{body}", "</td>{body}", $body);
+    $body = str_replace("{body}", "</tr>{body}", $body);
+  }
+  $body = str_replace("{body}", "</table>", $body);
+  $mail->Body = $body;
+  if($mail->send()){
+    error_log("email sent");
+  }
+  else{
+    error_log("mail not sent");
+    error_log($mail->ErrorInfo);
+  }
+}
