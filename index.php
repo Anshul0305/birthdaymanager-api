@@ -42,7 +42,7 @@ $enable_debug=false;
 if($enable_debug==true) {
 	$method = "GET";
 	$query = "cron";
-	$val = "weekly";
+	$val = "daily";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;

@@ -117,3 +117,22 @@ function send_weekly_birthday_alert(Member $member){
     error_log($mail->ErrorInfo);
   }
 }
+
+function send_daily_birthday_alert(Member $member){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/cron_daily.php');
+  $mail = email_init();
+  $mail->Subject = "Happy Birthday ".$member->first_name ." - Online Birthday Manager";
+  $mail->addAddress($member->email);
+  foreach ($member->birthday_members as $member_id) {
+    $mail->addCC(get_team_member_email_by_id($member_id));
+  }
+  $body = str_replace("{first_name}", $member->first_name, $template);
+  $mail->Body = $body;
+  if($mail->send()){
+    error_log("email sent");
+  }
+  else{
+    error_log("mail not sent");
+    error_log($mail->ErrorInfo);
+  }
+}

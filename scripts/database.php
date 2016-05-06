@@ -27,7 +27,6 @@ function query_sql($sql){
 	disconnect($connection);
 	return$result;
 }
-
 function template(){
 	$result=query_sql("");
 	$admin_id=array();
@@ -36,15 +35,23 @@ function template(){
 	}
 	return$admin_id;
 }
-
 function get_all_admin_ids(){
-	$sql="SELECT`team_admin_id`FROM`team`WHERE`deleted`!=1";
+	$sql="SELECT `team_admin_id` FROM `team` WHERE `deleted`!=1";
 	$result=query_sql($sql);
 	$admin_id=array();
 	while($row=$result->fetch_assoc()){
 		$admin_id[]=$row["team_admin_id"];
 	}
 	return$admin_id;
+}
+function get_all_member_ids(){
+	$sql="SELECT `member_id` FROM `team_members`";
+	$result=query_sql($sql);
+	$member_id=array();
+	while($row=$result->fetch_assoc()){
+		$member_id[]=$row["member_id"];
+	}
+	return$member_id;
 }
 
 // Team Functions
@@ -330,6 +337,19 @@ function get_team_member_email_by_id($member_id){
 	}
 	return $team_member_email;
 }
+function get_team_member_official_dob_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT official_dob FROM team_members WHERE member_id = ". $member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_dob = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_dob = $row["official_dob"];
+		}
+	}
+	return $team_member_dob;
+}
 function get_team_member_name_by_team_member_id_array($team_member_id_array){
 	$team_member_name_array = array();
 	foreach($team_member_id_array as $team_member_id){
@@ -470,7 +490,7 @@ function get_upcoming_birthdays($member_id){
 	$current_month = date('m');
 	$current_date = date('d');
 	$connection = connect();
-	$members = get_members_for_upcoming_birthday($member_id);
+	$members = get_other_members_for_team_member($member_id);
 	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE member_id in (".implode(',',$members).") and (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
 	$result = $connection->query($sql);
 	disconnect($connection);
@@ -492,8 +512,7 @@ function get_upcoming_birthdays($member_id){
 	});
 	return $member_details;
 }
-
-function get_members_for_upcoming_birthday($member_id){
+function get_other_members_for_team_member($member_id){
 	$team_ids = get_team_id_by_member_id($member_id);
 	$members = array();
 	foreach ($team_ids as $team_id) {
