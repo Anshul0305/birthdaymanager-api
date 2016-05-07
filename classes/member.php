@@ -52,12 +52,14 @@ class Member {
 			case "weekly":{
 				$admin_ids = get_all_admin_ids();
 				foreach ($admin_ids as $member_id) {
-					$members = get_upcoming_birthdays($member_id);
-					$this->member_id = $member_id;
-					$this->email = get_team_member_email_by_id($member_id);
-					$this->first_name = get_team_member_name_by_team_member_id($member_id);
-					$this->birthday_members = $members;
-					send_weekly_birthday_alert($this);
+					if(count(get_upcoming_birthdays($member_id))>0) {
+						$members = get_upcoming_birthdays($member_id);
+						$this->member_id = $member_id;
+						$this->email = get_team_member_email_by_id($member_id);
+						$this->first_name = get_team_member_name_by_team_member_id($member_id);
+						$this->birthday_members = $members;
+						send_weekly_birthday_alert($this);
+					}
 				}
 			}
 			break;
