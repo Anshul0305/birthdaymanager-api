@@ -67,9 +67,15 @@ function send_create_team_email(Team $team){
 function send_add_fund_email(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/add_fund.php');
   $mail = email_init();
-  $mail->addAddress($member->email, $member->first_name);  
+  $mail->addAddress($member->email, $member->first_name);
   $mail->Subject = 'Fund Added - Online Birthday Manager';
-  $mail->Body = str_replace("{first_name}",$member->first_name, $template);
+  $member->first_name = get_team_member_name_by_team_member_id($member->member_id);
+  $member->team_name = get_team_name_by_team_id($member->team_id);
+  $body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{team_name}",$member->team_name, $body);
+  $body = str_replace("{topup}",$member->fund, $body);
+  $body = str_replace("{fund_balance}", get_member_fund_by_team_id_and_member_id($member->team_id,$member->member_id), $body);
+  $mail->Body= $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 

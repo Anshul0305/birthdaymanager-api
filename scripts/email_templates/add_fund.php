@@ -1,21 +1,11 @@
-<p>Dear {first_name}, </br>
-Welcome to Online Birthday Manager.</p>
+<p>Dear {first_name}, <br>
 
-<p>With Birthday Manager, You can create multiple teams and celebrate group birthdays in more easy and convenient way.</p>
+<p>Your Account has been recharged successfully for team - {team_name} by £{topup}.</p>
 
-<p>Birthday Manager takes care of all the funds and group expenses and help you share the expense in the Team.</p>
+<p>Your New Fund Balance is £{fund_balance}.</p>
 
-<p>Here are the next steps for you:</p>
+<p>If you have any questions, Feel free to write us at support@onlinebirthdaymanager.com.</p>
 
-<ul>
-	<li>Create a Team or Join a Team if you already know someone who has created a Team.</li>
-	<li>Add Fund amount to Your Team Members</li>
-	<li>Celebrate Birthdays and Contribute to Group Expense on birthday celebrations.&nbsp;</li>
-	<li>And Yes,&nbsp;it is... FREE</li>
-</ul>
-
-<p>Should you have any other questions, Feel free to write us at support@onlinebirthdaymanager.com.</p>
-
-<p>Regards, </br>
+<p>Regards, <br>
 Birthday Manager Team</p>
 
