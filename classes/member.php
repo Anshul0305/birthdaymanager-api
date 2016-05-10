@@ -37,7 +37,10 @@ class Member {
 			case "daily":{
 				$member_ids = get_all_member_ids();
 				foreach ($member_ids as $member_id) {
-					if(get_team_member_official_dob_by_member_id($member_id) == date('Y-m-d')) {
+					$official_dob = get_team_member_official_dob_by_member_id($member_id);
+					$d = date('m-d',strtotime($official_dob));
+					$c = date('m-d');
+					if($d == $c) {
 						$members = get_other_members_for_team_member($member_id);
 						$this->member_id = $member_id;
 						$this->official_dob = get_team_member_official_dob_by_member_id($member_id);

@@ -117,6 +117,7 @@ function handle_get($query,$val,$subquery){
 	break;
 
 	case "cron":{
+		date_default_timezone_set('Europe/London');
 		$member = new Member();
 		$member->process_get($val, $subquery);
 		echo "CRON Job executed!";
