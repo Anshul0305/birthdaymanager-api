@@ -40,9 +40,9 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "GET";
-	$query = "cron";
-	$val = "daily";
+	$method = "POST";
+	$query = "invite";
+	$val = "";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
@@ -52,7 +52,7 @@ if($enable_debug==true) {
 	$first_name = "aaa";
 	$last_name = "bbb";
 	$member_id = 1;
-	$team_id = 4;
+	$team_id = 61;
 	$fund = 100;
 	$attendees_member_id = [1, 2, 3, 4, 5, 6, 7];
 	$reset_code = "1234";
@@ -218,6 +218,9 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj = new Member();
 			$member_obj->member_id = $member_id;
 			$member_obj->team_id = $team_id;
+			$member_obj->first_name = get_team_member_name_by_team_member_id($member_obj->member_id);
+			$member_obj->team_name = get_team_name_by_team_id($member_obj->team_id);
+			$member_obj->email = get_team_member_email_by_id($member_obj->member_id);
 			$status_code = $member_obj->process_post("leave-team");
 			show_response($status_code);
 			return $status_code;

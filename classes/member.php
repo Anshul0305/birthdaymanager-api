@@ -131,25 +131,36 @@ class Member {
 			}
 			break;
 			case "funds":{
+				$this->email = get_team_member_email_by_id($this->member_id);
 				$status = post_add_fund($this);
 				send_add_fund_email($this);
 				return $status;
 			}
 			break;
 			case "join-team":{
+				$this->first_name = get_team_member_name_by_team_member_id($this->member_id);
+				$this->team_name = get_team_name_by_team_id($this->team_id);
+				$this->email = get_team_member_email_by_id($this->member_id);
 				$status = join_team($this);
+				send_join_team_email($this);
 				return $status;
 			}
 			break;
 			case "leave-team":{
 				$status = leave_team($this);
+				send_leave_team_email($this);
 				return $status;
 			}
 			case "invite":{
 				$this->team_name = get_team_name_by_team_id($this->team_id);
-				$this->invite_team_link = json_decode(file_get_contents("env.json"))->website_host."/index.php?team-id=" . $this->team_id . "&team-name=" . urlencode($this->team_name);
-				$status = invite_to_team($this);
-				return $status;
+				if($this->team_name!=""){
+					$this->invite_team_link = json_decode(file_get_contents("env.json"))->website_host."/index.php?team-id=" . $this->team_id . "&team-name=" . urlencode($this->team_name);
+					$status = invite_to_team($this);
+					return $status["status_code"];
+				}
+				else{
+					return 400;
+				}
 			}
 			default:{
 

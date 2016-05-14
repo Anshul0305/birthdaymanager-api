@@ -15,7 +15,7 @@ function email_init(){
   $mail->Port = 465;                                    // TCP port to connect to
   $mail->From = "no-reply@onlinebirthdaymanager.com";
   $mail->FromName = "Online Birthday Manager";
-  $mail->addBCC('anshul.shrivastava123@gmail.com');
+  //$mail->addBCC('anshul.shrivastava123@gmail.com');
   $mail->isHTML(true); 
   return $mail;
 }
@@ -24,7 +24,7 @@ function send_password_reset_code(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/reset_password_link.php');
   $mail = email_init();
   $mail->addAddress($member->email);
-  $mail->Subject = "Password Reset Code - Online Birthday Manager";
+  $mail->Subject = "Password Reset Link - Online Birthday Manager";
   $body = str_replace("{first_name}",$member->first_name, $template);
   $body = str_replace("{reset_password_link}",$member->reset_password_link, $body);
   $mail->Body = $body;
@@ -49,9 +49,11 @@ function send_registration_success_email(Member $member){
 function send_join_team_email(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/join_team.php');
   $mail = email_init();
-  $mail->addAddress($member->email, $member->first_name);  
-  $mail->Subject = 'Team Joined - Online Birthday Manager';
-  $mail->Body = str_replace("{first_name}",$member->first_name, $template);
+  $mail->addAddress($member->email);
+  $mail->Subject = 'Joined Team - Online Birthday Manager';
+  $body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{team_name}",$member->team_name, $body);
+  $mail->Body = $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
@@ -64,10 +66,22 @@ function send_create_team_email(Team $team){
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
+
+function send_leave_team_email(Member $member){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/left_team.php');
+  $mail = email_init();
+  $mail->addAddress($member->email);
+  $mail->Subject = 'Left Team - Online Birthday Manager';
+  $body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{team_name}",$member->team_name, $body);
+  $mail->Body = $body;
+  $GLOBALS['enable_email']==true?$mail->send():"";
+}
+
 function send_add_fund_email(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/add_fund.php');
   $mail = email_init();
-  $mail->addAddress($member->email, $member->first_name);
+  $mail->addAddress($member->email);
   $mail->Subject = 'Fund Added - Online Birthday Manager';
   $member->first_name = get_team_member_name_by_team_member_id($member->member_id);
   $member->team_name = get_team_name_by_team_id($member->team_id);
@@ -90,10 +104,12 @@ function invite_to_team(Member $member){
   $mail->Body = $body;
   if($mail->send()){
     error_log("email sent");
+    return array("email_sent" => true, "status_code" => 200);
   }
   else{
     error_log("mail not sent");
     error_log($mail->ErrorInfo);
+    array("email_sent" => false, "status_code" => 400);
   }
 }
 
