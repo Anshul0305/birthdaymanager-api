@@ -588,7 +588,7 @@ function get_team_fund_by_team_id($team_id){
 			$team_fund_balance = $row["team_fund_balance"];
 		}
 	}
-	return $team_fund_balance;
+	return round($team_fund_balance, 2);
 }
 function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 	$connection = connect();
@@ -601,7 +601,7 @@ function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 			$member_fund_balance = $row["fund_balance"];
 		}
 	}
-	return $member_fund_balance;
+	return round($member_fund_balance,2);
 }
 
 
