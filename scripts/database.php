@@ -369,7 +369,7 @@ function is_member($email){
 }
 function login_member(Member $member){
 	$username = $member->email;
-	$password = $member->password;
+	$password = md5($member->password);
 	$connection = connect();
 	$sql = "SELECT member_id, email, password FROM team_members";
 	$result = $connection->query($sql);
@@ -432,6 +432,7 @@ function reset_password(Member $member){
 				}
 			}
 			if ($reset_code == $db_reset_code) {
+				$password1 = md5($password1);
 				$sql = "UPDATE `team_members` SET `password`='" . $password1 . "', reset_code='".get_uuid()."' WHERE `email` = '" . $email . "'";
 				$connection->query($sql);
 				$q_result = array("message" => "password updated", "status_code" => 200, "member_id" => $member_id);
@@ -448,6 +449,7 @@ function reset_password(Member $member){
 function register_new_member(Member $member){
 	if(!is_member($member->email)) {
 		$connection = connect();
+		$member->password = md5($member->password);
 		$sql = "INSERT INTO team_members (member_id, first_name, last_name, email, password, dob, official_dob, reset_code) VALUES (NULL, '".$member->first_name."', '".$member->last_name."', '".$member->email."' , '".$member->password."', '3000-01-01', '".$member->official_dob."','".get_uuid()."')";
 		$result = $connection->query($sql);
 		disconnect($connection);
