@@ -27,8 +27,9 @@ class Celebration{
 	}
 
 	public function process_post(){
-		$this->perhead_contribution = ($this->cake_amount + $this->other_expense)/($this->total_attendees);
+		$this->perhead_contribution = round(($this->cake_amount + $this->other_expense)/($this->total_attendees),2);
 		$result = post_add_celebration($this);
+		send_birthday_celebration_fund_update_email_to_attendees($this);
 		return $result;
 	}
 }

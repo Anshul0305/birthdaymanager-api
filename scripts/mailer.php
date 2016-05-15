@@ -93,6 +93,24 @@ function send_add_fund_email(Member $member){
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
+function send_birthday_celebration_fund_update_email_to_attendees(Celebration $celebration){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/fund_deducted.php');
+  foreach ($celebration->attendees_member_id_array as $member_id) {
+    $mail = email_init();
+    $mail->addAddress(get_team_member_email_by_id($member_id));
+    $mail->Subject = 'Fund Deducted - Online Birthday Manager';
+    $first_name = get_team_member_name_by_team_member_id($member_id);
+    $body = str_replace("{first_name}",$first_name, $template);
+    $body = str_replace("{birthday_person}",get_team_member_name_by_team_member_id($celebration->birthday_of_member_id), $body);
+    $body = str_replace("{team_name}",get_team_name_by_team_id($celebration->team_id), $body);
+    $body = str_replace("{contribution}",$celebration->perhead_contribution, $body);
+    $body = str_replace("{new_fund_balance}", get_member_fund_by_team_id_and_member_id($celebration->team_id,$member_id), $body);
+    $mail->Body= $body;
+    $GLOBALS['enable_email']==true?$mail->send():"";
+  }
+}
+
+
 function invite_to_team(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/invite_to_team.php');
   $mail = email_init();
