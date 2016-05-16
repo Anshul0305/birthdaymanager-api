@@ -624,7 +624,7 @@ function get_celebrations_by_celebration_id($celebration_id){
 				'celebration_date' => $row["celebration_date"],
 				'cake_amount' => $row["cake_amount"],
 				'other_expense' => $row["other_expense"],
-				'perhead_contribution' => $row["perhead_contribution"],
+				'perhead_contribution' => round($row["perhead_contribution"],2),
 				'total_attendees' => $row["total_attendees"],
 				'attendees' => get_attendees_by_celebration_id($row["celebration_id"])
 			);
