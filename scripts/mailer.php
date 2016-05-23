@@ -92,9 +92,11 @@ function send_leave_team_email(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/left_team.php');
   $mail = email_init();
   $mail->addAddress($member->email);
+  $mail->addCC(get_team_member_email_by_id(get_team_admin_id_by_team_id($member->team_id)));
   $mail->Subject = 'Left Team - Online Birthday Manager';
   $body = str_replace("{first_name}",$member->first_name, $template);
   $body = str_replace("{team_name}",$member->team_name, $body);
+  $body = str_replace("{team_admin}",get_team_member_name_by_team_member_id(get_team_admin_id_by_team_id($member->team_id)), $body);
   $mail->Body = $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
