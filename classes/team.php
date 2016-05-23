@@ -45,8 +45,9 @@ class Team {
 		}
 	}
 
-	public function process_delete($team_id){
-		delete_team($team_id);
+	public function process_delete(){
+		delete_team($this->team_id);
+		send_delete_team_email($this);
 	}
 	
 }

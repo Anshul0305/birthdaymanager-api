@@ -20,6 +20,10 @@ function email_init(){
   return $mail;
 }
 
+function get_template($template_name){
+  return file_get_contents(getcwd().'/scripts/email_templates/'.$template_name.'.php');
+}
+
 function send_password_reset_code(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/reset_password_link.php');
   $mail = email_init();
@@ -66,6 +70,23 @@ function send_create_team_email(Team $team){
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
+function send_delete_team_email(Team $team){
+  $members = get_team_member_id_by_team_id($team->team_id);
+  foreach ($members as $member){
+    $template = get_template('team_deleted');
+    $mail = email_init();
+    $member_id = $member["id"];
+    $member_name = $member["name"];
+    $member_email = get_team_member_email_by_id($member_id);
+    $mail->addAddress($member_email);
+    $mail->Subject = 'Team Deleted - Online Birthday Manager';
+    $body = str_replace("{first_name}",$member_name, $template);
+    $body = str_replace("{team_name}",get_team_name_by_team_id($team->team_id), $body);
+    $body = str_replace("{team_admin}",get_team_member_name_by_team_member_id(get_team_admin_id_by_team_id($team->team_id)), $body);
+    $mail->Body = $body;
+    $GLOBALS['enable_email']==true?$mail->send():"";
+  }
+}
 
 function send_leave_team_email(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/left_team.php');
@@ -109,7 +130,6 @@ function send_birthday_celebration_fund_update_email_to_attendees(Celebration $c
     $GLOBALS['enable_email']==true?$mail->send():"";
   }
 }
-
 
 function invite_to_team(Member $member){
   $template = file_get_contents(getcwd().'/scripts/email_templates/invite_to_team.php');

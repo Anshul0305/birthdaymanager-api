@@ -40,9 +40,9 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "POST";
-	$query = "invite";
-	$val = "";
+	$method = "DELETE";
+	$query = "teams";
+	$val = "7";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
@@ -262,7 +262,8 @@ function handle_delete($query,$val){
 	switch($query) {
 		case "teams": {
 			$team = new Team();
-			$status = $team->process_delete($val);
+			$team->team_id = $val;
+			$status = $team->process_delete();
 			return $status;
 		}
 		break;

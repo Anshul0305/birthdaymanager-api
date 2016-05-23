@@ -106,6 +106,19 @@ function get_team_details_by_team_id($team_id){
 	}
 	return $team_detail_list;
 }
+function get_team_admin_id_by_team_id($team_id){
+	$connection = connect();
+	$sql = "SELECT team_admin_id FROM team WHERE team_id = ". $team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_admin_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_admin_id = $row["team_admin_id"];
+		}
+	}
+	return $team_admin_id;
+}
 function get_team_details_by_team_ids($team_ids){
 	$team_details = array();
 	foreach($team_ids as $team_id){
