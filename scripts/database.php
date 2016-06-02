@@ -36,7 +36,7 @@ function template(){
 	return$admin_id;
 }
 function get_all_admin_ids(){
-	$sql="SELECT `team_admin_id` FROM `team` WHERE `deleted`!=1";
+	$sql="SELECT DISTINCT `team_admin_id` FROM `team` WHERE `deleted`!=1";
 	$result=query_sql($sql);
 	$admin_id=array();
 	while($row=$result->fetch_assoc()){
