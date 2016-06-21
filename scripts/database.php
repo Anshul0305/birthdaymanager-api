@@ -506,7 +506,7 @@ function get_upcoming_birthdays($member_id){
 	$current_date = date('d');
 	$connection = connect();
 	$members = get_other_members_for_team_member($member_id);
-	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE member_id in (".implode(',',$members).") and (Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1);
+	$sql = "SELECT member_id, first_name,last_name,official_dob  FROM team_members WHERE member_id in (".implode(',',$members).") and ((Month(official_dob) = ".$current_month." and Day(official_dob) >= ".$current_date.") OR Month(official_dob) = ".($current_month+1).")";
 	$result = $connection->query($sql);
 	disconnect($connection);
 
