@@ -549,20 +549,22 @@ function get_member_transactions_by_member_id($member_id){
 	$transactions = array();
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
-			$transactions[] = $row["transaction_type"] == "debit"? array(
-				'transaction_id' =>$row["transaction_id"],
-				'transaction_type' => $row["transaction_type"],
-				'team_name' => get_team_name_by_team_id($row["team_id"]),
-				'transaction_date' => $row["transaction_date"],
-				'transaction_amount' => $row["transaction_amount"],
-				'birthday_celebration_of' => get_team_member_name_by_team_member_id(get_birthday_of_member_id_by_celebration_id($row["celebration_id"]))
-			):array(
-				'transaction_id' =>$row["transaction_id"],
-				'transaction_type' => $row["transaction_type"],
-				'team_name' => get_team_name_by_team_id($row["team_id"]),
-				'transaction_date' => $row["transaction_date"],
-				'transaction_amount' => $row["transaction_amount"]
-			);
+			if (is_member_part_of_team($member_id, $row["team_id"])) {
+				$transactions[] = $row["transaction_type"] == "debit" ? array(
+					'transaction_id' => $row["transaction_id"],
+					'transaction_type' => $row["transaction_type"],
+					'team_name' => get_team_name_by_team_id($row["team_id"]),
+					'transaction_date' => $row["transaction_date"],
+					'transaction_amount' => $row["transaction_amount"],
+					'birthday_celebration_of' => get_team_member_name_by_team_member_id(get_birthday_of_member_id_by_celebration_id($row["celebration_id"]))
+				) : array(
+					'transaction_id' => $row["transaction_id"],
+					'transaction_type' => $row["transaction_type"],
+					'team_name' => get_team_name_by_team_id($row["team_id"]),
+					'transaction_date' => $row["transaction_date"],
+					'transaction_amount' => $row["transaction_amount"]
+				);
+			}
 		}
 	}
 	return $transactions;
