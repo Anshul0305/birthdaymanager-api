@@ -709,7 +709,10 @@ function get_celebrations_by_member_id($member_id){
 	if ($result->num_rows>0) {
 		$celebration = array();
 		while ($row = $result->fetch_assoc()) {
-			$celebration[] = get_celebrations_by_celebration_id($row["celebration_id"])[0];
+			$celebration_team_id = get_celebrations_by_celebration_id($row["celebration_id"])[0]["team_id"];
+			if(is_member_part_of_team($member_id,$celebration_team_id)) {
+				$celebration[] = get_celebrations_by_celebration_id($row["celebration_id"])[0];
+			}
 		}
 	}
 	return $celebration;
@@ -722,4 +725,14 @@ function sanitize($data){
 }
 function get_uuid(){
 	return file_get_contents("https://www.uuidgenerator.net/api/version1");
+}
+
+function is_member_part_of_team($member_id, $team_id){
+	$teams = get_member_details_by_member_id($member_id)[0]["teams"];
+	foreach($teams as $team){
+		if($team["id"] == $team_id){
+			return true;
+		}
+	}
+	return false;
 }
