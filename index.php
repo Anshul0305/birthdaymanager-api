@@ -183,8 +183,8 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->password = $password;
 			$member_obj->email = $email;
 			$member_obj->official_dob = $official_dob;
-			$member_obj->first_name = $first_name;
-			$member_obj->last_name = $last_name;
+			$member_obj->first_name = ucfirst($first_name);
+			$member_obj->last_name = ucfirst($last_name);
 			$member_obj->team_id = $team_id;
 			$member_obj->team_name = $team_name;
 			$json_register_result = json_encode($member_obj->process_post("register"));
