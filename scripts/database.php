@@ -172,6 +172,19 @@ function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
 	}
 	return $team_details;
 }
+function get_team_message($team_id){
+	$connection = connect();
+	$sql = "SELECT message FROM team WHERE team_id = ". $team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_name = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_name = $row["message"];
+		}
+	}
+	return $team_name;
+}
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
@@ -194,6 +207,21 @@ function post_create_new_team(Team $team){
 		return true;
 	}
 	else {
+		return false;
+	}
+}
+function post_team_message(Team $team){
+	$team_id = $team->team_id;
+	$team_message = $team->message;
+	$connection = connect();
+	$sql = "UPDATE `team` SET `message`= '".$team_message."' WHERE `team_id` = ".$team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	if($result == true){
+		return true;
+	}
+	else{
 		return false;
 	}
 }

@@ -32,6 +32,7 @@ $team_id = $_POST["team_id"];
 $reset_code = $_POST["reset_code"];
 $password1 = $_POST["password1"];
 $password2 = $_POST["password2"];
+$message = $_POST["message"];
 
 //Headers
 header("Access-Control-Allow-Origin: *");
@@ -40,9 +41,9 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "DELETE";
-	$query = "teams";
-	$val = "7";
+	$method = "POST";
+	$query = "team-message";
+	$val = "12";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
@@ -52,12 +53,13 @@ if($enable_debug==true) {
 	$first_name = "aaa";
 	$last_name = "bbb";
 	$member_id = 1;
-	$team_id = 61;
+	$team_id = 12;
 	$fund = 100;
 	$attendees_member_id = [1, 2, 3, 4, 5, 6, 7];
 	$reset_code = "1234";
 	$password1 = "anshul";
 	$password2 = "anshul";
+	$message = "debug";
 }
 
 // Handle Methods
@@ -67,7 +69,7 @@ try {
 		handle_put($query,$val,$subquery);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2, $message);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -134,7 +136,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2, $message){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -145,6 +147,15 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			return $status_code;
 		}
 		break;
+		case "team-message":{
+			$team_obj = new Team();
+			$team_obj->team_id = $team_id;
+			$team_obj->message = $message;
+			$status_code = $team_obj->process_post("team-message");
+			show_response($status_code);
+			return $status_code;
+		}
+			break;
 		case "login":{
 			$member_obj = new Member();
 			$member_obj->email = $email;

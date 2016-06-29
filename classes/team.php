@@ -7,6 +7,7 @@ class Team {
 	public $members;
 	public $team_fund_balance;
 	public $admin_id;
+	public $message;
 
 	// Gateway to other functions
 	public function process_get($team_id, $subquery){
@@ -14,8 +15,8 @@ class Team {
 			return search_teams($subquery);
 		}
 		switch($subquery){
-			case "stub":{
-
+			case "message":{
+				return get_team_message($team_id);
 			}
 			break;
 
@@ -38,6 +39,16 @@ class Team {
 				}
 			}
 			break;
+			case "team-message":{
+				$success = post_team_message($this);
+				if ($success == true){
+					return 200;
+				}
+				else{
+					return 400;
+				}
+			}
+				break;
 			default:{
 
 			}
