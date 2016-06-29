@@ -188,8 +188,9 @@ function get_team_message($team_id){
 function post_create_new_team(Team $team){
 	$team_name = $team->team_name;
 	$team_admin_id = $team->admin_id;
+	$team_message = $team->message;
 	$connection = connect();
-	$sql = "INSERT INTO team (team_id, team_name, team_admin_id, deleted) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).",0)";
+	$sql = "INSERT INTO team (team_id, team_name, team_admin_id, deleted, message) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).",0, ".$team_message.")";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
 	$result = $connection->query($sql);

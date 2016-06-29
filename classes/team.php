@@ -30,6 +30,7 @@ class Team {
 	public function process_post($action){
 		switch($action){
 			case "create-team":{
+				$this->message = "This is default message for your team";
 				$success = post_create_new_team($this);
 				if ($success == true){
 					return 200;
