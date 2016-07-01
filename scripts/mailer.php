@@ -46,7 +46,9 @@ function send_registration_success_email(Member $member){
   $mail = email_init();
   $mail->addAddress($member->email, $member->first_name);  
   $mail->Subject = 'Welcome to Online Birthday Manager';
-  $mail->Body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{magic_link}",get_autologin_link($member->email), $body);
+  $mail->Body = $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
@@ -128,6 +130,7 @@ function send_birthday_celebration_fund_update_email_to_attendees(Celebration $c
     $body = str_replace("{birthday_person}",get_team_member_name_by_team_member_id($celebration->birthday_of_member_id), $body);
     $body = str_replace("{team_name}",get_team_name_by_team_id($celebration->team_id), $body);
     $body = str_replace("{contribution}",$celebration->perhead_contribution, $body);
+    $body = str_replace("{magic_link}",get_autologin_link(get_team_member_email_by_id($member_id)), $body);
     $body = str_replace("{new_fund_balance}", get_member_fund_by_team_id_and_member_id($celebration->team_id,$member_id), $body);
     $mail->Body= $body;
     $GLOBALS['enable_email']==true?$mail->send():"";

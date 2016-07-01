@@ -6,6 +6,8 @@
 
 <p>Your New Fund Balance is £{new_fund_balance}.</p>
 
+<p>Please click on this <a href="{magic_link}">magic link</a> to view your account details.</p>
+
 <p>If you have any questions, feel free to write us at support@onlinebirthdaymanager.com.</p>
 
 <p>Regards, <br>
