@@ -15,6 +15,7 @@ function email_init(){
   $mail->Port = 465;                                    // TCP port to connect to
   $mail->From = "no-reply@onlinebirthdaymanager.com";
   $mail->FromName = "Online Birthday Manager";
+  $mail->CharSet = 'UTF-8';
   $mail->addBCC('anshul.shrivastava123@gmail.com');
   $mail->isHTML(true); 
   return $mail;
