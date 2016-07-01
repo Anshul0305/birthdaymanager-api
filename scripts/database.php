@@ -435,6 +435,48 @@ function login_member(Member $member){
 
 	return $result;
 }
+function autologin_member(Member $member){
+	$username = $member->email;
+	$code = $member->reset_code;
+	$connection = connect();
+	$sql = "SELECT member_id, email, reset_code FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_code = "";
+	$member_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $username){
+				$member_id = $row["member_id"];
+				$db_code = $row["reset_code"];
+			}
+		}
+	}
+	if($code == $db_code){
+		$result = array("logged_in" => true, "status_code" => 200, "member_id" => $member_id);
+	}
+	else{
+		$result = array("logged_in" => false, "status_code"=> 401);
+	}
+
+	return $result;
+}
+function get_autologin_link($email){
+	$connection = connect();
+	$sql = "SELECT member_id, email, reset_code FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_code = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["email"] == $email){
+				$db_code = $row["reset_code"];
+			}
+		}
+	}
+	$result = json_decode(file_get_contents("././env.json"))->website_host."/autologin.php?signin-email=".$email."&signin-code=".$db_code;
+	return $result;
+}
 function get_reset_password_code(Member $member){
 	$email = $member->email;
 	$connection = connect();

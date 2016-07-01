@@ -111,6 +111,7 @@ function send_add_fund_email(Member $member){
   $body = str_replace("{first_name}",$member->first_name, $template);
   $body = str_replace("{team_name}",$member->team_name, $body);
   $body = str_replace("{topup}",$member->fund, $body);
+  $body = str_replace("{magic_link}",get_autologin_link($member->email), $body);
   $body = str_replace("{fund_balance}", get_member_fund_by_team_id_and_member_id($member->team_id,$member->member_id), $body);
   $mail->Body= $body;
   $GLOBALS['enable_email']==true?$mail->send():"";

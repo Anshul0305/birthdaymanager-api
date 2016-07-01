@@ -102,6 +102,11 @@ class Member {
 				return $status;
 			}
 			break;
+			case "autologin":{
+				$status = autologin_member($this);
+				return $status;
+			}
+				break;
 			case "reset-password-link":{
 				$status = get_reset_password_code($this);
 				if($status["status_code"]==200) {

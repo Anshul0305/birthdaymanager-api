@@ -42,18 +42,18 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "team-message";
+	$query = "funds";
 	$val = "12";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
-	$email = "anshul.shrivastava123@gmail.com";
+	$email = "anshul@gm.com";
 	$password = "anshul";
 	$official_dob = "2016-01-01";
 	$first_name = "aaa";
 	$last_name = "bbb";
-	$member_id = 1;
-	$team_id = 12;
+	$member_id = 14;
+	$team_id = 11;
 	$fund = 100;
 	$attendees_member_id = [1, 2, 3, 4, 5, 6, 7];
 	$reset_code = "1234";
@@ -167,6 +167,17 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			return $status_code;
 		}
 		break;
+		case "autologin":{
+			$member_obj = new Member();
+			$member_obj->email = $email;
+			$member_obj->reset_code = $reset_code;
+			$json_login_result = json_encode($member_obj->process_post("autologin"));
+			$status_code = json_decode($json_login_result)->status_code;
+			show_response($status_code);
+			echo $json_login_result;
+			return $status_code;
+		}
+			break;
 		case "reset-password-link":{
 			$member_obj = new Member();
 			$member_obj->email = $email;
