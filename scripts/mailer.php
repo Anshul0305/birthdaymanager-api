@@ -154,7 +154,7 @@ function invite_to_team(Member $member){
   else{
     error_log("mail not sent");
     error_log($mail->ErrorInfo);
-    array("email_sent" => false, "status_code" => 400);
+    return array("email_sent" => false, "status_code" => 400);
   }
 }
 

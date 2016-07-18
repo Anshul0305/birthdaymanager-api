@@ -42,16 +42,16 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "funds";
+	$query = "invite";
 	$val = "12";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
 	$email = "anshul@gm.com";
 	$password = "anshul";
-	$official_dob = "2016-01-01";
-	$first_name = "aaa";
-	$last_name = "bbb";
+	$official_dob = "2010-01-01";
+	$first_name = "Ansh";
+	$last_name = "Shr";
 	$member_id = 14;
 	$team_id = 11;
 	$fund = 100;
@@ -66,7 +66,7 @@ if($enable_debug==true) {
 try {
 	  switch($method){
 	  case 'PUT':
-		handle_put($query,$val,$subquery);
+		handle_put($query, $member_id, $email, $official_dob, $first_name, $last_name);
 		break;
 	  case 'POST':
 		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2, $message);
@@ -199,7 +199,7 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			echo $json_login_result;
 			return $status_code;
 		}
-			break;
+		break;
 		case "register":{
 			$member_obj = new Member();
 			$member_obj->password = $password;
@@ -235,7 +235,6 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			return $status_code;
 		}
 		break;
-
 		case "leave-team":{
 			$member_obj = new Member();
 			$member_obj->member_id = $member_id;
@@ -247,7 +246,6 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			show_response($status_code);
 			return $status_code;
 		}
-
 		case "invite":{
 			$member_obj = new Member();
 			$member_obj->email = $email;
@@ -256,8 +254,7 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			show_response($status_code);
 			return $status_code;
 		}
-			break;
-
+		break;
 		case "celebrations":{
 			$celebration_obj = new Celebration();
 			$celebration_obj->birthday_of_member_id = $birthday_of_member_id;
@@ -267,7 +264,19 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$celebration_obj->total_attendees = count($attendees_member_id);
 			$celebration_obj->team_id = $team_id;
 			$celebration_obj->attendees_member_id_array = $attendees_member_id;
-			$status_code = $celebration_obj->process_post();
+			$status_code = $celebration_obj->process_post("celebrate");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "members": {
+			$member_obj = new Member();
+			$member_obj->member_id = $member_id;
+			$member_obj->email = $email;
+			$member_obj->official_dob = $official_dob;
+			$member_obj->first_name = $first_name;
+			$member_obj->last_name = $last_name;
+			$status_code = $member_obj->process_post("edit-member");
 			show_response($status_code);
 			return $status_code;
 		}
@@ -276,6 +285,15 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 
 		}
 		break;
+	}
+}
+
+// Handle PUT Request
+function handle_put($query, $member_id, $email, $official_dob, $first_name, $last_name){
+	switch($query){
+		default:{
+
+		}
 	}
 }
 
@@ -316,7 +334,7 @@ function show_response($response_code){
 		}
 		break;
 		default:{
-			header("HTTP/1.1 400");
+			header("HTTP/1.1 500");
 		}
 	}
 }

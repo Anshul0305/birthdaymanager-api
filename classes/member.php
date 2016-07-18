@@ -156,6 +156,7 @@ class Member {
 				send_leave_team_email($this);
 				return $status;
 			}
+			break;
 			case "invite":{
 				$this->team_name = get_team_name_by_team_id($this->team_id);
 				if($this->team_name!=""){
@@ -167,11 +168,23 @@ class Member {
 					return 400;
 				}
 			}
+			break;
+			case "edit-member":{
+				$status = edit_member($this);
+				return $status==true?200:400;
+			}
+			break;
 			default:{
 
 			}
 			break;
 		}
 	}
-	
+
+	public function process_put($action){
+		switch($action){
+
+
+		}
+	}
 }

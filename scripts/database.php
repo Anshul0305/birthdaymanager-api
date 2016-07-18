@@ -435,6 +435,16 @@ function login_member(Member $member){
 
 	return $result;
 }
+function edit_member(Member $member){
+	$member_id = $member->member_id;
+	$first_name = $member->first_name;
+	$last_name = $member->last_name;
+	$email = $member->email;
+	$official_dob = $member->official_dob;
+	$sql = "UPDATE `team_members` SET `first_name`='".$first_name."',`last_name`='".$last_name."',`email`='".$email."',`official_dob`='".$official_dob."' WHERE `member_id` =".$member_id;
+	$result = query_sql($sql);
+	return $result;
+}
 function autologin_member(Member $member){
 	$username = $member->email;
 	$code = $member->reset_code;
