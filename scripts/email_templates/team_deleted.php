@@ -6,7 +6,7 @@
 
 <p>If you have any fund deposited in the team, please contact Team admin - {team_admin}</p>
 
-<p>If you have any other questions, Feel free to write us at support@onlinebirthdaymanager.com.</p>
+<p>If you have any other questions, Feel free to write us at hello@onlinebirthdaymanager.com.</p>
 
 <p>Regards, <br></br>
 Birthday Manager Team</p>

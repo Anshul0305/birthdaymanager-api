@@ -9,11 +9,11 @@ function email_init(){
   $mail->isSMTP();                                      // Set mailer to use SMTP
   $mail->Host = 'gator4179.hostgator.com';  // Specify main and backup SMTP servers
   $mail->SMTPAuth = true;                               // Enable SMTP authentication
-  $mail->Username = 'no-reply@onlinebirthdaymanager.com';                 // SMTP username
-  $mail->Password = 'anshul@123';                           // SMTP password
+  $mail->Username = 'hello@onlinebirthdaymanager.com';                 // SMTP username
+  $mail->Password = 'London@123';                           // SMTP password
   $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
   $mail->Port = 465;                                    // TCP port to connect to
-  $mail->From = "no-reply@onlinebirthdaymanager.com";
+  $mail->From = "hello@onlinebirthdaymanager.com";
   $mail->FromName = "Online Birthday Manager";
   $mail->CharSet = 'UTF-8';
   $mail->addBCC('anshul.shrivastava123@gmail.com');

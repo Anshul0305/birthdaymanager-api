@@ -6,7 +6,7 @@
 
 <p> {reset_password_link} </p>
 
-<p>If you have any other questions, Feel free to write us at support@onlinebirthdaymanager.com.</p>
+<p>If you have any other questions, Feel free to write us at hello@onlinebirthdaymanager.com.</p>
 
 <p>Regards, <br></br>
 Birthday Manager Team</p>
