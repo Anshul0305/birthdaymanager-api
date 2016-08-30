@@ -42,12 +42,12 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "invite";
+	$query = "register";
 	$val = "12";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
-	$email = "anshul@gm.com";
+	$email = "anshul121@gm.com";
 	$password = "anshul";
 	$official_dob = "2010-01-01";
 	$first_name = "Ansh";

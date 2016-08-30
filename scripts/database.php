@@ -23,9 +23,19 @@ function return_message($result){
 
 function query_sql($sql){
 	$connection=connect();
-	$result=$connection->query($sql);
+	$result = $connection->query($sql);
 	disconnect($connection);
-	return$result;
+	return $result;
+}
+
+function get_query_result($result,$param)
+{
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$param_val = $row[$param];
+		}
+	}
+	return $param_val;
 }
 function template(){
 	$result=query_sql("");
@@ -548,7 +558,9 @@ function register_new_member(Member $member){
 		$result = $connection->query($sql);
 		disconnect($connection);
 		if($result == true){
-			$result = array("registered" => true, "status_code" => 200);
+			$member_id_result = query_sql("SELECT `member_id` FROM `team_members` WHERE `email` = '".$member->email."'");
+			$member_id = get_query_result($member_id_result,'member_id');
+			$result = array("registered" => true, "status_code" => 200, "member_id" => $member_id);
 		}
 		else{
 			$result = array("registered" => false, "status_code"=> 401, "error" => "Registration failed due to internal error");
