@@ -157,8 +157,6 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	$connection = connect();
 	$sql = $team_id == "" ? ("SELECT team_id, team_name FROM team where deleted = 0") : ( "SELECT team_id, team_name FROM team WHERE deleted = 0 and team_id = ". $team_id);
 	$result = $connection->query($sql);
-	$sql_admin = "";
-	$result_admin = $connection->query($sql_admin);
 	disconnect($connection);
 	$team_detail_list = array();
 	if ($result->num_rows>0) {
@@ -168,7 +166,7 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
 				'is_admin' => is_member_admin_of_team($member_id,$row["team_id"]),
-				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+//				'admin_name' => get_team_member_name_by_team_member_id($member_id),  // Removed 'admin_name'
 				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
 			);
