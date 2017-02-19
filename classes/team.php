@@ -49,6 +49,16 @@ class Team {
 					return 400;
 				}
 			}
+			break;
+			case "team-admin":{
+				$success = post_team_admin($this);
+				if ($success == true){
+					return 200;
+				}
+				else{
+					return 400;
+				}
+			}
 				break;
 			default:{
 

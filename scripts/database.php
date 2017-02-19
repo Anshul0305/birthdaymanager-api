@@ -96,7 +96,7 @@ function get_team_id_by_member_id($member_id){
 }
 function get_team_details_by_team_id($team_id){
 	$connection = connect();
-	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_id = ". $team_id);
+	$sql = $team_id == "" ? ("SELECT team_id, team_name FROM team WHERE deleted = 0") : ( "SELECT team_id, team_name FROM team WHERE deleted = 0 and team_id = ". $team_id);
 	$result = $connection->query($sql);
 	disconnect($connection);
 	$team_detail_list = array();
@@ -106,8 +106,8 @@ function get_team_details_by_team_id($team_id){
 			$team_detail[] = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
-				'admin_id' => $row["team_admin_id"],
-				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
+				'team_admin' => get_team_admin_id_by_team_id($row["team_id"]),
+//				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'fund_balance' => get_team_fund_by_team_id($row["team_id"]),
 				'members' => get_team_member_id_by_team_id($row["team_id"]),
 			);
@@ -118,13 +118,13 @@ function get_team_details_by_team_id($team_id){
 }
 function get_team_admin_id_by_team_id($team_id){
 	$connection = connect();
-	$sql = "SELECT team_admin_id FROM team WHERE team_id = ". $team_id;
+	$sql = "SELECT distinct team_admin_id FROM team_admin WHERE team_id = ". $team_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
-	$team_admin_id = "";
+	$team_admin_id = [];
 	if ($result->num_rows>0) {
 		while ($row = $result->fetch_assoc()) {
-			$team_admin_id = $row["team_admin_id"];
+			$team_admin_id[] = array("admin_id" => $row["team_admin_id"], "admin_name" => get_team_member_name_by_team_member_id($row["team_admin_id"]));
 		}
 	}
 	return $team_admin_id;
@@ -200,7 +200,7 @@ function post_create_new_team(Team $team){
 	$team_admin_id = $team->admin_id;
 	$team_message = $team->message;
 	$connection = connect();
-	$sql = "INSERT INTO team (team_id, team_name, team_admin_id, deleted, message) VALUES (NULL,'".sanitize($team_name)."',".sanitize($team_admin_id).",0, '".sanitize($team_message)."')";
+	$sql = "INSERT INTO team (team_id, team_name, deleted, message) VALUES (NULL,'".sanitize($team_name)."',0, '".sanitize($team_message)."')";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT team_id FROM team ORDER BY team_id DESC LIMIT 1";
 	$result = $connection->query($sql);
@@ -212,9 +212,12 @@ function post_create_new_team(Team $team){
 	}
 	$sql = "INSERT INTO team_teammember (team_team_member_id, team_id, member_id, fund_balance) VALUES (NULL, ".$last_team_id.", ".$team_admin_id.", 0)";
 	$result_2 = $connection->query($sql);
+	$sql = "INSERT INTO team_admin (id, team_id, team_admin_id) VALUES (NULL,'".$last_team_id."', '".sanitize($team_admin_id)."')";
+	$result_3 = $connection->query($sql);
+
 	disconnect($connection);
 
-	if($result_1 == true && $result_2 == true){
+	if($result_1 == true && $result_2 == true && $result_3 == true){
 		return true;
 	}
 	else {
@@ -226,6 +229,21 @@ function post_team_message(Team $team){
 	$team_message = $team->message;
 	$connection = connect();
 	$sql = "UPDATE `team` SET `message`= '".$team_message."' WHERE `team_id` = ".$team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	if($result == true){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+function post_team_admin(Team $team){
+	$team_id = $team->team_id;
+	$team_admin_id = $team->admin_id;
+	$connection = connect();
+	$sql = "INSERT INTO `team_admin`(`id`, `team_id`, `team_admin_id`) VALUES (NULL,".$team_id.",".$team_admin_id.")";
 	$result = $connection->query($sql);
 	disconnect($connection);
 

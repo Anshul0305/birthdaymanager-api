@@ -11,28 +11,28 @@ $val = $_GET["val"];
 $subquery = $_GET["subquery"];
 
 // Post Params
-$first_name = $_POST["first_name"];
-$last_name = $_POST["last_name"];
-$email = $_POST["email"];
-$password = $_POST["password"];
-$official_dob = $_POST["official_dob"];
-$member_type = $_POST["member_type"];
-$member_id = $_POST["member_id"];
-$fund = $_POST["fund"];
-$cake_amount = $_POST["cake_amount"];
-$other_expense = $_POST["other_expense"];
-$total_attendees = $_POST["total_attendees"];
-$celebration_date = $_POST["celebration_date"];
-$per_head_contribution = $_POST["per_head_contribution"];
-$birthday_of_member_id = $_POST["birthday_of_member_id"];
-$attendees_member_id = $_POST["attendees_member_id"];
-$team_name = $_POST["team_name"];
-$team_admin_id = $_POST["team_admin_id"];
-$team_id = $_POST["team_id"];
-$reset_code = $_POST["reset_code"];
-$password1 = $_POST["password1"];
-$password2 = $_POST["password2"];
-$message = $_POST["message"];
+$first_name = $_POST["first_name"];  // first name of member
+$last_name = $_POST["last_name"];  // last name of member
+$email = $_POST["email"];  // email address of member
+$password = $_POST["password"];  // password of member
+$official_dob = $_POST["official_dob"];  // official dob of member
+$member_type = $_POST["member_type"];  // member type of member
+$member_id = $_POST["member_id"];  // member id of team member
+$fund = $_POST["fund"];  // fund amount of team member
+$cake_amount = $_POST["cake_amount"];  // cake amount for birthday celebration
+$other_expense = $_POST["other_expense"];  // other expense amount
+$total_attendees = $_POST["total_attendees"];  // count of total attendees
+$celebration_date = $_POST["celebration_date"];  // birthday celebration date
+$per_head_contribution = $_POST["per_head_contribution"];  // per head contribution amount
+$birthday_of_member_id = $_POST["birthday_of_member_id"];  // member id of member having birthday
+$attendees_member_id = $_POST["attendees_member_id"];  // array of celebrations attendees
+$team_name = $_POST["team_name"];  // team name
+$team_admin_id = $_POST["team_admin_id"];  // array of team admin ids
+$team_id = $_POST["team_id"];  // team id
+$reset_code = $_POST["reset_code"];  // reset password code
+$password1 = $_POST["password1"];  // password 1
+$password2 = $_POST["password2"];  // password 2
+$message = $_POST["message"];  // message to be posted in team
 
 //Headers
 header("Access-Control-Allow-Origin: *");
@@ -42,8 +42,8 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "register";
-	$val = "12";
+	$query = "teams";
+	$val = "11";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
@@ -152,6 +152,15 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$team_obj->team_id = $team_id;
 			$team_obj->message = $message;
 			$status_code = $team_obj->process_post("team-message");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "team-admin":{
+			$team_obj = new Team();
+			$team_obj->team_id = $team_id;
+			$team_obj->admin_id = $team_admin_id;
+			$status_code = $team_obj->process_post("team-admin");
 			show_response($status_code);
 			return $status_code;
 		}
