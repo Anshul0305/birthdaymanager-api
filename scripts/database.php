@@ -46,7 +46,7 @@ function template(){
 	return$admin_id;
 }
 function get_all_admin_ids(){
-	$sql="SELECT DISTINCT `team_admin_id` FROM `team` WHERE `deleted`!=1";
+	$sql="SELECT DISTINCT `team_admin_id` FROM `team_admin` WHERE `deleted`!=1";
 	$result=query_sql($sql);
 	$admin_id=array();
 	while($row=$result->fetch_assoc()){
@@ -155,8 +155,10 @@ function get_team_name_by_team_id($team_id){
 function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	// This function checks if a member is admin of a team or not
 	$connection = connect();
-	$sql = $team_id == "" ? ("SELECT team_id, team_name, team_admin_id FROM team where deleted = 0") : ( "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_id = ". $team_id);
+	$sql = $team_id == "" ? ("SELECT team_id, team_name FROM team where deleted = 0") : ( "SELECT team_id, team_name FROM team WHERE deleted = 0 and team_id = ". $team_id);
 	$result = $connection->query($sql);
+	$sql_admin = "";
+	$result_admin = $connection->query($sql_admin);
 	disconnect($connection);
 	$team_detail_list = array();
 	if ($result->num_rows>0) {
@@ -165,7 +167,7 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 			$team_detail = array(
 				'id' => $row["team_id"],
 				'name' => $row["team_name"],
-				'is_admin' => ($row["team_admin_id"] == $member_id)?"true":"false",
+				'is_admin' => is_member_admin_of_team($member_id,$row["team_id"]),
 				'admin_name' => get_team_member_name_by_team_member_id($row["team_admin_id"]),
 				'member_fund_balance' => get_member_fund_by_team_id_and_member_id($row["team_id"],$member_id),
 				'members' => get_team_member_name_by_team_member_id_array(get_team_member_id_by_team_id($row["team_id"]))
@@ -175,6 +177,22 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	}
 	return $team_detail_list;
 }
+
+function is_member_admin_of_team($member_id, $team_id){
+	$connection = connect();
+	$sql = "SELECT distinct team_admin_id FROM team_admin WHERE team_id = ". $team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if ($row["team_admin_id"]==$member_id){
+				return "true";
+			}
+		}
+	}
+	return "false";
+}
+
 function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
 	$team_details = array();
 	foreach($team_ids as $team_id){
