@@ -270,6 +270,21 @@ function post_team_admin(Team $team){
 		return false;
 	}
 }
+function post_revoke_admin(Team $team){
+	$team_id = $team->team_id;
+	$team_admin_id = $team->admin_id;
+	$connection = connect();
+	$sql = "DELETE FROM `team_admin` WHERE `team_admin_id` = ".$team_admin_id." and `team_id` = ".$team_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+
+	if($result == true){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
 function search_teams($search_term){
 	$connection = connect();
 	$sql = "SELECT team_id, team_name, team_admin_id FROM team WHERE deleted = 0 and team_name like '%".$search_term."%'";

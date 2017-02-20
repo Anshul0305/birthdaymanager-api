@@ -59,6 +59,16 @@ class Team {
 					return 400;
 				}
 			}
+			break;
+			case "revoke-admin":{
+				$success = post_revoke_admin($this);
+				if ($success == true){
+					return 200;
+				}
+				else{
+					return 400;
+				}
+			}
 				break;
 			default:{
 

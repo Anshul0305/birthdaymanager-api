@@ -164,7 +164,16 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			show_response($status_code);
 			return $status_code;
 		}
-			break;
+        break;
+        case "revoke-admin":{
+            $team_obj = new Team();
+            $team_obj->team_id = $team_id;
+            $team_obj->admin_id = $team_admin_id;
+            $status_code = $team_obj->process_post("revoke-admin");
+            show_response($status_code);
+            return $status_code;
+        }
+            break;
 		case "login":{
 			$member_obj = new Member();
 			$member_obj->email = $email;
