@@ -64,7 +64,7 @@ function send_join_team_email(Member $member){
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
-function send_create_team_email(Team $team){
+function send_team_created_email(Team $team){
   $template = file_get_contents(getcwd().'/scripts/email_templates/join_team.php');
   $mail = email_init();
   $mail->addAddress($member->email, $member->first_name);  
@@ -73,7 +73,7 @@ function send_create_team_email(Team $team){
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
-function send_delete_team_email(Team $team){
+function send_team_deleted_email(Team $team){
   $members = get_team_member_id_by_team_id($team->team_id);
   foreach ($members as $member){
     $template = get_template('team_deleted');
@@ -100,6 +100,32 @@ function send_leave_team_email(Member $member){
   $body = str_replace("{first_name}",$member->first_name, $template);
   $body = str_replace("{team_name}",$member->team_name, $body);
   $body = str_replace("{team_admin}",get_team_member_name_by_team_member_id(get_team_admin_id_by_team_id($member->team_id)), $body);
+  $mail->Body = $body;
+  $GLOBALS['enable_email']==true?$mail->send():"";
+}
+
+function send_team_admin_added_email(Team $team){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/admin_added.php');
+  $mail = email_init();
+  $admin_name = get_team_member_name_by_team_member_id($team->admin_id);
+  $admin_email = get_team_member_email_by_id($team->admin_id);
+  $mail->addAddress($admin_email, $admin_name);
+  $mail->Subject = 'Team Admin Added - Online Birthday Manager';
+  $body = str_replace("{first_name}",$admin_name, $template);
+  $body = str_replace("{team_name}",$team->team_name, $body);
+  $mail->Body = $body;
+  $GLOBALS['enable_email']==true?$mail->send():"";
+}
+
+function send_team_admin_revoked_email(Team $team){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/admin_revoked.php');
+  $mail = email_init();
+  $admin_name = get_team_member_name_by_team_member_id($team->admin_id);
+  $admin_email = get_team_member_email_by_id($team->admin_id);
+  $mail->addAddress($admin_email, $admin_name);
+  $mail->Subject = 'Team Admin Removed - Online Birthday Manager';
+  $body = str_replace("{first_name}",$admin_name, $template);
+  $body = str_replace("{team_name}",$team->team_name, $body);
   $mail->Body = $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
@@ -166,10 +192,10 @@ function send_weekly_birthday_alert(Member $member){
   $body = str_replace("{first_name}", $member->first_name, $template);
   $body = str_replace("{body}", "<table>{body}", $body);
   foreach ($member->birthday_members as $birthday_member) {
-    $date = date("d M", strtotime($birthday_member["dob"]));
-    $day = date("D", strtotime(date("d M", strtotime($birthday_member["dob"]))));
-    $body = str_replace("{body}", "<tr>{body}", $body);
-    $body = str_replace("{body}", "<td>{body}", $body);
+    $date = date("d M", strtotime($birthday_member["dob"]));  // get date and month
+    $day = date("D", strtotime(date("d M", strtotime($birthday_member["dob"]))));  // get day
+    $body = str_replace("{body}", "<tr>{body}", $body);  // add row
+    $body = str_replace("{body}", "<td>{body}", $body);  // add cell
     $body = str_replace("{body}", $birthday_member["first_name"]." ".$birthday_member["last_name"]."</td><td>".$date ." (".$day.")" . "</td>"."{body}", $body);
     $body = str_replace("{body}", "</td>{body}", $body);
     $body = str_replace("{body}", "</tr>{body}", $body);

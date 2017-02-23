@@ -33,6 +33,7 @@ class Team {
 				$this->message = "This is default message for your team";
 				$success = post_create_new_team($this);
 				if ($success == true){
+					send_team_created_email($this);
 					return 200;
 				}
 				else{
@@ -53,6 +54,7 @@ class Team {
 			case "team-admin":{
 				$success = post_team_admin($this);
 				if ($success == true){
+					send_team_admin_added_email($this);
 					return 200;
 				}
 				else{
@@ -63,6 +65,7 @@ class Team {
 			case "revoke-admin":{
 				$success = post_revoke_admin($this);
 				if ($success == true){
+					send_team_admin_revoked_email($this);
 					return 200;
 				}
 				else{
@@ -79,7 +82,7 @@ class Team {
 
 	public function process_delete(){
 		delete_team($this->team_id);
-		send_delete_team_email($this);
+		send_team_deleted_email($this);
 	}
 	
 }

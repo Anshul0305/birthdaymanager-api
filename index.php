@@ -41,9 +41,9 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "POST";
-	$query = "teams";
-	$val = "11";
+	$method = "GET";
+	$query = "cron";
+	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
@@ -159,6 +159,7 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 		case "team-admin":{
 			$team_obj = new Team();
 			$team_obj->team_id = $team_id;
+            $team_obj->team_name = get_team_name_by_team_id($team_id);
 			$team_obj->admin_id = $team_admin_id;
 			$status_code = $team_obj->process_post("team-admin");
 			show_response($status_code);
@@ -168,6 +169,7 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
         case "revoke-admin":{
             $team_obj = new Team();
             $team_obj->team_id = $team_id;
+            $team_obj->team_name = get_team_name_by_team_id($team_id);
             $team_obj->admin_id = $team_admin_id;
             $status_code = $team_obj->process_post("revoke-admin");
             show_response($status_code);
