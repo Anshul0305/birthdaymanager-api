@@ -234,10 +234,10 @@ function post_create_new_team(Team $team){
 	disconnect($connection);
 
 	if($result_1 == true && $result_2 == true && $result_3 == true){
-		return true;
+		return array("success" => true, "status_code" => 200 ,"team_id" => $last_team_id, "team_admin_id" => $team_admin_id);
 	}
 	else {
-		return false;
+		return array("success" => false, "status_code" => 401);
 	}
 }
 function post_team_message(Team $team){

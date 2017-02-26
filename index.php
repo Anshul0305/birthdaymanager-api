@@ -142,8 +142,10 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$team_obj = new Team();
 			$team_obj->team_name = $team_name;
 			$team_obj->admin_id = $team_admin_id;
-			$status_code = $team_obj->process_post("create-team");
+			$create_team_result = json_encode($team_obj->process_post("create-team"));
+			$status_code = json_decode($create_team_result)->status_code;
 			show_response($status_code);
+			echo $create_team_result;
 			return $status_code;
 		}
 		break;

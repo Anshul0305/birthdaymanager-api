@@ -31,14 +31,12 @@ class Team {
 		switch($action){
 			case "create-team":{
 				$this->message = "This is default message for your team";
-				$success = post_create_new_team($this);
-				if ($success == true){
+				$status = post_create_new_team($this);
+				// status contains success, status code, team id and team admin name
+				if (json_decode($status)->success == true){
 					send_team_created_email($this);
-					return 200;
 				}
-				else{
-					return 400;
-				}
+				return $status;
 			}
 			break;
 			case "team-message":{
