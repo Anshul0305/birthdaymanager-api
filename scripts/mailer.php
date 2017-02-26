@@ -65,11 +65,15 @@ function send_join_team_email(Member $member){
 }
 
 function send_team_created_email(Team $team){
-  $template = file_get_contents(getcwd().'/scripts/email_templates/join_team.php');
+  $template = file_get_contents(getcwd().'/scripts/email_templates/create_team.php');
   $mail = email_init();
-  $mail->addAddress($member->email, $member->first_name);  
+  $team_admin_email = get_team_member_email_by_id($team->admin_id);
+  $team_admin_name = get_team_member_name_by_team_member_id($team->admin_id);
+  $mail->addAddress($team_admin_email , $team_admin_name);
   $mail->Subject = 'Team Created - Online Birthday Manager';
-  $mail->Body = str_replace("{first_name}",$member->first_name, $template);
+  $body = str_replace("{first_name}",$team_admin_name, $template);
+  $body = str_replace("{team_name}",$team->team_name, $body);
+  $mail->Body = $body;
   $GLOBALS['enable_email']==true?$mail->send():"";
 }
 
