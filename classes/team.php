@@ -33,7 +33,7 @@ class Team {
 				$this->message = "This is default message for your team";
 				$status = post_create_new_team($this);
 				// status contains success, status code, team id and team admin name
-				if (json_decode($status)->success == true){
+				if ($status["success"] == true){
 					send_team_created_email($this);
 				}
 				return $status;
