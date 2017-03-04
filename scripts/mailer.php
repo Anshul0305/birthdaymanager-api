@@ -233,3 +233,24 @@ function send_daily_birthday_alert(Member $member){
     error_log($mail->ErrorInfo);
   }
 }
+
+function send_birthday_invitation_email(Celebration $celebration){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/birthday_invitation.php');
+  foreach ($celebration->attendees_member_id_array as $member_id) {
+    $mail = email_init();
+    $mail->addAddress(get_team_member_email_by_id($member_id));
+    $mail->Subject = 'Invitation - Online Birthday Manager';
+    $first_name = get_team_member_name_by_team_member_id($member_id);
+    $body = str_replace("{first_name}",$first_name, $template);
+    $body = str_replace("{birthday_person}",get_team_member_name_by_team_member_id($celebration->birthday_of_member_id), $body);
+    $body = str_replace("{team_name}",get_team_name_by_team_id($celebration->team_id), $body);
+    $body = str_replace("{celebration_day}", date('D', strtotime($celebration->celebration_date)), $body);
+    $body = str_replace("{celebration_date}",date( "d M Y", strtotime($celebration->celebration_date)), $body);
+    $body = str_replace("{celebration_time}",$celebration->celebration_time, $body);
+    $body = str_replace("{celebration_message}",$celebration->birthday_invitation_message, $body);
+    $body = str_replace("{celebration_location}",$celebration->birthday_invitation_location, $body);
+    $mail->Body= $body;
+    $GLOBALS['enable_email']==true?$mail->send():"";
+  }
+  
+}

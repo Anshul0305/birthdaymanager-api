@@ -23,6 +23,9 @@ $cake_amount = $_POST["cake_amount"];  // cake amount for birthday celebration
 $other_expense = $_POST["other_expense"];  // other expense amount
 $total_attendees = $_POST["total_attendees"];  // count of total attendees
 $celebration_date = $_POST["celebration_date"];  // birthday celebration date
+$celebration_time = $_POST["celebration_time"];  // birthday celebration time
+$birthday_invitation_message = $_POST["birthday_invitation_message"];  // birthday invitation message
+$birthday_invitation_location = $_POST["birthday_invitation_location"];  // birthday invitation location
 $per_head_contribution = $_POST["per_head_contribution"];  // per head contribution amount
 $birthday_of_member_id = $_POST["birthday_of_member_id"];  // member id of member having birthday
 $attendees_member_id = $_POST["attendees_member_id"];  // array of celebrations attendees
@@ -41,8 +44,8 @@ header("Content-Type: application/json; charset=UTF-8");
 //Debug Define
 $enable_debug=false;
 if($enable_debug==true) {
-	$method = "GET";
-	$query = "cron";
+	$method = "POST";
+	$query = "birthday-invitation";
 	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
@@ -60,6 +63,11 @@ if($enable_debug==true) {
 	$password1 = "anshul";
 	$password2 = "anshul";
 	$message = "debug";
+	$birthday_of_member_id = 11;
+	$celebration_date = "2016-10-11";
+	$celebration_time = "";
+	$birthday_invitation_location = "location";
+	$birthday_invitation_message  = "message";
 }
 
 // Handle Methods
@@ -69,7 +77,7 @@ try {
 		handle_put($query, $member_id, $email, $official_dob, $first_name, $last_name);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2, $message);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message, $birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -136,7 +144,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date,$attendees_member_id, $reset_code, $password1, $password2, $message){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message,$birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -299,6 +307,20 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$member_obj->first_name = $first_name;
 			$member_obj->last_name = $last_name;
 			$status_code = $member_obj->process_post("edit-member");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "birthday-invitation": {
+			$birthday_invitation_obj = new Celebration();
+			$birthday_invitation_obj->birthday_of_member_id = $birthday_of_member_id;
+			$birthday_invitation_obj->celebration_date = $celebration_date;
+			$birthday_invitation_obj->celebration_time = $celebration_time;
+			$birthday_invitation_obj->birthday_invitation_message = $birthday_invitation_message;
+			$birthday_invitation_obj->birthday_invitation_location = $birthday_invitation_location;
+			$birthday_invitation_obj->team_id = $team_id;
+			$birthday_invitation_obj->attendees_member_id_array = $attendees_member_id;
+			$status_code = $birthday_invitation_obj->process_post("birthday-invitation");
 			show_response($status_code);
 			return $status_code;
 		}

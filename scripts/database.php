@@ -20,14 +20,12 @@ function return_message($result){
 		return array("Result"=>"Fail");
 	}
 }
-
 function query_sql($sql){
 	$connection=connect();
 	$result = $connection->query($sql);
 	disconnect($connection);
 	return $result;
 }
-
 function get_query_result($result,$param)
 {
 	if ($result->num_rows>0) {
@@ -65,7 +63,6 @@ function get_all_member_ids(){
 }
 
 // Team Functions
-
 function is_team_deleted($team_id){
 	$connection = connect();
 	$sql = "SELECT deleted FROM team WHERE team_id=".$team_id;
@@ -175,7 +172,6 @@ function get_team_details_by_team_id_and_member_id($team_id,$member_id){
 	}
 	return $team_detail_list;
 }
-
 function is_member_admin_of_team($member_id, $team_id){
 	$connection = connect();
 	$sql = "SELECT distinct team_admin_id FROM team_admin WHERE team_id = ". $team_id;
@@ -190,7 +186,6 @@ function is_member_admin_of_team($member_id, $team_id){
 	}
 	return "false";
 }
-
 function get_team_details_by_team_ids_and_member_id($team_ids, $member_id){
 	$team_details = array();
 	foreach($team_ids as $team_id){
@@ -681,7 +676,6 @@ function get_other_members_for_team_member($member_id){
 	return array_unique($members);
 }
 
-
 // Transactions Functions
 function get_member_transactions_by_member_id($member_id){
 	$connection = connect();
@@ -711,7 +705,6 @@ function get_member_transactions_by_member_id($member_id){
 	}
 	return $transactions;
 }
-
 
 // Fund Functions
 function post_add_fund(Member $member){
@@ -760,7 +753,6 @@ function get_member_fund_by_team_id_and_member_id($team_id, $member_id){
 	}
 	return round($member_fund_balance,2);
 }
-
 
 // Celebrations Functions
 function get_celebrations_by_celebration_id($celebration_id){
@@ -861,7 +853,11 @@ function get_celebrations_by_member_id($member_id){
 	}
 	return $celebration;
 }
+function send_birthday_invitation($celebration){
+	// Do some action
+	return 200;
 
+}
 
 // Other Functions
 function sanitize($data){
@@ -870,7 +866,6 @@ function sanitize($data){
 function get_uuid(){
 	return file_get_contents("https://www.uuidgenerator.net/api/version1");
 }
-
 function is_member_part_of_team($member_id, $team_id){
 	$teams = get_member_details_by_member_id($member_id)[0]["teams"];
 	foreach($teams as $team){
