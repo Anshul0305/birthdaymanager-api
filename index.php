@@ -315,7 +315,7 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$birthday_invitation_obj = new Celebration();
 			$birthday_invitation_obj->birthday_of_member_id = $birthday_of_member_id;
 			$birthday_invitation_obj->celebration_date = $celebration_date;
-			$birthday_invitation_obj->celebration_time = $celebration_time;
+			$birthday_invitation_obj->celebration_time = date("h:i a", strtotime($celebration_time));
 			$birthday_invitation_obj->birthday_invitation_message = $birthday_invitation_message;
 			$birthday_invitation_obj->birthday_invitation_location = $birthday_invitation_location;
 			$birthday_invitation_obj->team_id = $team_id;

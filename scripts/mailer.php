@@ -240,7 +240,7 @@ function send_birthday_invitation_email(Celebration $celebration){
     $mail = email_init();
     $mail->addAddress(get_team_member_email_by_id($member_id));
     $mail->Subject = 'Invitation - Online Birthday Manager';
-    $first_name = get_team_member_name_by_team_member_id($member_id);
+    $first_name = get_team_member_first_name_by_team_member_id($member_id);
     $body = str_replace("{first_name}",$first_name, $template);
     $body = str_replace("{birthday_person}",get_team_member_name_by_team_member_id($celebration->birthday_of_member_id), $body);
     $body = str_replace("{team_name}",get_team_name_by_team_id($celebration->team_id), $body);

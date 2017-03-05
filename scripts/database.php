@@ -394,6 +394,19 @@ function get_team_member_name_by_team_member_id($team_member_id){
 	}
 	return $team_member_first_name . " " . $team_member_last_name;
 }
+function get_team_member_first_name_by_team_member_id($team_member_id){
+	$connection = connect();
+	$sql = "SELECT first_name FROM team_members WHERE member_id = ". $team_member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$team_member_first_name = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$team_member_first_name = $row["first_name"];
+		}
+	}
+	return $team_member_first_name;
+}
 function get_team_member_name_by_email($email){
 	$connection = connect();
 	$sql = "SELECT first_name FROM team_members WHERE email = '". $email."'";
