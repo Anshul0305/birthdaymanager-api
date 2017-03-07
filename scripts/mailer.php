@@ -239,10 +239,11 @@ function send_birthday_invitation_email(Celebration $celebration){
   foreach ($celebration->attendees_member_id_array as $member_id) {
     $mail = email_init();
     $mail->addAddress(get_team_member_email_by_id($member_id));
-    $mail->Subject = 'Invitation - Online Birthday Manager';
     $first_name = get_team_member_first_name_by_team_member_id($member_id);
+    $birthday_person = get_team_member_name_by_team_member_id($celebration->birthday_of_member_id);
+    $mail->Subject = "Invitation for ".$birthday_person."'s Birthday - Online Birthday Manager";
     $body = str_replace("{first_name}",$first_name, $template);
-    $body = str_replace("{birthday_person}",get_team_member_name_by_team_member_id($celebration->birthday_of_member_id), $body);
+    $body = str_replace("{birthday_person}",$birthday_person, $body);
     $body = str_replace("{team_name}",get_team_name_by_team_id($celebration->team_id), $body);
     $body = str_replace("{celebration_day}", date('D', strtotime($celebration->celebration_date)), $body);
     $body = str_replace("{celebration_date}",date( "d M Y", strtotime($celebration->celebration_date)), $body);

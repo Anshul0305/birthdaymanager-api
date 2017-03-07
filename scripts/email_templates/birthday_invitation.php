@@ -245,7 +245,7 @@
 
                                     <div style="line-height: 24px">
 
-                                        Dear {first_name},&nbsp; please join us to celebrate {birthday_person}'s birthday on {celebration_day}, {celebration_date}.
+                                        Dear {first_name},&nbsp; please join us to celebrate {birthday_person}'s birthday on {celebration_day}, {celebration_date} at {celebration_time}.
 
                                     </div>
                                 </td>
@@ -495,11 +495,11 @@
                 <tr>
                     <td height="30" style="font-size: 30px; line-height: 30px;">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td align="center" style="color: #9c9c9c; font-size: 13px; font-family: 'Titillium Web', Helvetica Neue, Calibri, sans-serif; line-height: 24px;" class="outlook-font align-center">
-                        You're receiving this email because you've signed up to receive updates from Online Birthday Manager. If you'd prefer not to receive updates you can <a href="{{UnsubscribeURL}}" style="color:#9c9c9c;">unsubscribe from all </a>
-                    </td>
-                </tr>
+<!--                <tr>-->
+<!--                    <td align="center" style="color: #9c9c9c; font-size: 13px; font-family: 'Titillium Web', Helvetica Neue, Calibri, sans-serif; line-height: 24px;" class="outlook-font align-center">-->
+<!---->
+<!--                    </td>-->
+<!--                </tr>-->
             </table>
         </td>
     </tr>
