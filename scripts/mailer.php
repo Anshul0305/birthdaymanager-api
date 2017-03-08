@@ -255,3 +255,20 @@ function send_birthday_invitation_email(Celebration $celebration){
   }
   
 }
+
+function send_greeting_card_email(GreetingCard $greeting_card){
+  $template = file_get_contents(getcwd().'/scripts/email_templates/greeting_card.php');
+    $mail = email_init();
+    $mail->addAddress(get_team_member_email_by_id($greeting_card->sender_id));
+    $mail->addAddress(get_team_member_email_by_id($greeting_card->receiver_id));
+    $sender_name = get_team_member_first_name_by_team_member_id($greeting_card->sender_id);
+    $receiver_name = get_team_member_name_by_team_member_id($greeting_card->receiver_id);
+    $mail->Subject = "Greeting Card - ".$greeting_card->greeting_card_mail_subject." - Online Birthday Manager";
+    $body = str_replace("{sender_name}",$sender_name, $template);
+    $body = str_replace("{receiver_name}",$receiver_name, $body);
+    $body = str_replace("{greeting_card_link}",$greeting_card->greeting_card_link, $body);
+
+    $mail->Body= $body;
+    $GLOBALS['enable_email']==true?$mail->send():"";
+    return 200;
+}

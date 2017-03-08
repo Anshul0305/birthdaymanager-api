@@ -871,6 +871,9 @@ function send_birthday_invitation($celebration){
 	return 200;
 
 }
+function send_greeting_card($greeting_card){
+	return 200;
+}
 
 // Other Functions
 function sanitize($data){

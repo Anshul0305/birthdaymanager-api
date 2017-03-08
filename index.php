@@ -2,6 +2,7 @@
 require_once('classes/team.php');
 require_once('classes/member.php');
 require_once('classes/celebration.php');
+require_once('classes/greeting-card.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -36,6 +37,10 @@ $reset_code = $_POST["reset_code"];  // reset password code
 $password1 = $_POST["password1"];  // password 1
 $password2 = $_POST["password2"];  // password 2
 $message = $_POST["message"];  // message to be posted in team
+$sender_id = $_POST["sender_id"];  // sender of greeting card
+$receiver_id = $_POST["receiver_id"];  // receiver of greeting card
+$greeting_card_message = $_POST["greeting_card_message"]; // message from sender
+$greeting_card_mail_subject = $_POST["greeting_card_mail_subject"];  // email subject for greeting card
 
 //Headers
 header("Access-Control-Allow-Origin: *");
@@ -45,7 +50,7 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "birthday-invitation";
+	$query = "greeting-card";
 	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
@@ -68,6 +73,10 @@ if($enable_debug==true) {
 	$celebration_time = "";
 	$birthday_invitation_location = "location";
 	$birthday_invitation_message  = "message";
+	$sender_id = 14;
+	$receiver_id = 15;
+	$greeting_card_message = "message"; // message from sender
+	$greeting_card_mail_subject = "Happy Birthday";  // email subject for greeting card
 }
 
 // Handle Methods
@@ -77,7 +86,7 @@ try {
 		handle_put($query, $member_id, $email, $official_dob, $first_name, $last_name);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message, $birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message, $birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -144,7 +153,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message,$birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message,$birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -321,6 +330,18 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$birthday_invitation_obj->team_id = $team_id;
 			$birthday_invitation_obj->attendees_member_id_array = $attendees_member_id;
 			$status_code = $birthday_invitation_obj->process_post("birthday-invitation");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "greeting-card": {
+			$greeting_card_obj = new GreetingCard();
+			$greeting_card_obj->sender_id = $sender_id;
+			$greeting_card_obj->receiver_id = $receiver_id;
+			$greeting_card_obj->greeting_card_message = $greeting_card_message;
+			$greeting_card_obj->greeting_card_mail_subject = $greeting_card_mail_subject;
+
+			$status_code = $greeting_card_obj->process_post("greeting-card");
 			show_response($status_code);
 			return $status_code;
 		}
