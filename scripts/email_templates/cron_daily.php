@@ -192,7 +192,7 @@
 
                                     <div style="line-height: 24px">
 
-                                        We wish you very Happy Birthday and many more happy returns of the day! Enjoy your day
+                                        We wish you a very Happy Birthday.. Enjoy your day!
 
                                     </div>
                                 </td>
@@ -217,7 +217,7 @@
                             <tr>
                                 <td align="center" style="color: #ffffff; font-size: 13px; font-family: 'Titillium Web', Helvetica Neue, Calibri, sans-serif; font-weight: 700; line-height: 13px;">
                                     <div class="text_container outlook-font" style="line-height: 24px;">
-                                        <a href="#" style="ine-height: 24px;color: #ffffff; text-decoration: none;">View Your Greeting Card</a>
+                                        <a href="#" style="ine-height: 24px;color: #ffffff; text-decoration: none;">Have a nice year ahead!</a>
                                     </div>
                                 </td>
                             </tr>
