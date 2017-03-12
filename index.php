@@ -135,6 +135,13 @@ function handle_get($query,$val,$subquery){
 	}
 	break;
 
+	case "greeting-card":{
+		$greeting_card = new GreetingCard();
+		$greeting_card_list = $greeting_card->process_get($val, $subquery);
+		echo json_encode($greeting_card_list);
+	}
+	break;
+
 	case "cron":{
 		date_default_timezone_set('Europe/London');
 		$member = new Member();

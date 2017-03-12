@@ -871,8 +871,79 @@ function send_birthday_invitation($celebration){
 	return 200;
 
 }
-function send_greeting_card($greeting_card){
-	return 200;
+
+// Greetings Functions
+function post_greeting_card(GreetingCard $greeting_card){
+	$receiver_id = $greeting_card->receiver_id;
+	$message = $greeting_card->greeting_card_message;
+	$creation_date = $greeting_card->creation_date;
+	$send_date = $greeting_card->send_date;
+	$sender_id = $greeting_card->sender_id;
+
+	$connection = connect();
+	$sql = "INSERT INTO greeting_cards (receiver_id, creation_date, send_date) VALUES ('".$receiver_id."',".$creation_date.",".$send_date.")";
+	$result_1 = $connection->query($sql);
+	$sql = "SELECT greeting_card_id FROM greeting_cards ORDER BY greeting_card_id DESC LIMIT 1";
+	$result = $connection->query($sql);
+	$last_greeting_card_id = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			$last_greeting_card_id = $row["greeting_card_id"];
+		}
+	}
+	$sql = "INSERT INTO greeting_card_messages (id, greeting_card_id, sender_id, message) VALUES (NULL, ".$last_greeting_card_id.", ".$sender_id.",".$message.")";
+	$result_2 = $connection->query($sql);
+
+	disconnect($connection);
+
+	if($result_1 == true && $result_2 == true ){
+		return array("success" => true, "status_code" => 200 ,"greeting_card_id" => $last_greeting_card_id);
+	}
+	else {
+		return array("success" => false, "status_code" => 401);
+	}
+}
+function get_greetings_by_greeting_card_id($greeting_card_id){
+	$connection = connect();
+	$sql = "SELECT greeting_card_id, receiver_id, creation_date, send_date FROM greeting_cards WHERE greeting_card_id = ".$greeting_card_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$greeting_list = array();
+	if ($result->num_rows>0) {
+		$greeting = array();
+		while ($row = $result->fetch_assoc()) {
+			$greeting[] = array(
+				'greeting_card_id' => $row["greeting_card_id"],
+				'receiver_id' => $row["receiver_id"],
+				'receiver_name' => get_team_member_name_by_team_member_id($row["receiver_id"]),
+				'creation_date' => $row["creation_date"],
+				'send_date' => $row["send_date"],
+				'greeting_sender' => get_greeting_sender_details_by_greeting_card_id($greeting_card_id)
+			);
+		}
+		$greeting_list = $greeting;
+	}
+	return $greeting_list[0];
+}
+function get_greeting_sender_details_by_greeting_card_id($greeting_card_id){
+	$connection = connect();
+	$sql = "SELECT greeting_card_id, sender_id, greeting_message FROM greeting_card_messages WHERE greeting_card_id = ".$greeting_card_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$greeting_list = array();
+	if ($result->num_rows>0) {
+		$greeting = array();
+		while ($row = $result->fetch_assoc()) {
+			$greeting[] = array(
+				'sender_id' => $row["sender_id"],
+				'sender_name' => get_team_member_first_name_by_team_member_id($row["sender_id"]),
+				'message' => $row["greeting_message"]
+			);
+		}
+		$greeting_list = $greeting;
+	}
+	return $greeting_list;
+
 }
 
 // Other Functions

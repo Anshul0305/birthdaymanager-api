@@ -270,5 +270,4 @@ function send_greeting_card_email(GreetingCard $greeting_card){
 
     $mail->Body= $body;
     $GLOBALS['enable_email']==true?$mail->send():"";
-    return 200;
 }
