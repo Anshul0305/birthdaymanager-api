@@ -263,7 +263,7 @@
                                         <tr>
                                             <td align="center" style="color: #5c9085; font-size: 13px; font-family: 'Titillium Web', Helvetica Neue, Calibri, sans-serif; font-weight: 700; line-height: 13px;">
                                                 <div class="text_container outlook-font" style="line-height: 24px;">
-                                                    <a href="{reset_password_link}" style="ine-height: 24px;color: #5c9085; text-decoration: none;">View Greeting Card</a>
+                                                    <a href="{greeting_card_link}" style="ine-height: 24px;color: #5c9085; text-decoration: none;">View Greeting Card</a>
                                                 </div>
                                             </td>
                                         </tr>

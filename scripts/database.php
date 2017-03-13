@@ -881,7 +881,7 @@ function post_greeting_card(GreetingCard $greeting_card){
 	$sender_id = $greeting_card->sender_id;
 
 	$connection = connect();
-	$sql = "INSERT INTO greeting_cards (receiver_id, creation_date, send_date) VALUES ('".$receiver_id."',".$creation_date.",".$send_date.")";
+	$sql = "INSERT INTO greeting_cards (greeting_card_id, receiver_id, creation_date, send_date) VALUES (NULL,'".$receiver_id."',".$creation_date.",".$send_date.")";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT greeting_card_id FROM greeting_cards ORDER BY greeting_card_id DESC LIMIT 1";
 	$result = $connection->query($sql);
@@ -891,7 +891,7 @@ function post_greeting_card(GreetingCard $greeting_card){
 			$last_greeting_card_id = $row["greeting_card_id"];
 		}
 	}
-	$sql = "INSERT INTO greeting_card_messages (id, greeting_card_id, sender_id, message) VALUES (NULL, ".$last_greeting_card_id.", ".$sender_id.",".$message.")";
+	$sql = "INSERT INTO greeting_card_messages (id, greeting_card_id, sender_id, greeting_message) VALUES (NULL, ".$last_greeting_card_id.", ".$sender_id.",'".$message."')";
 	$result_2 = $connection->query($sql);
 
 	disconnect($connection);

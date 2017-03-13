@@ -31,8 +31,9 @@ class GreetingCard{
 			case "greeting-card":{
 				$db_status = post_greeting_card($this);
 
-				if(json_decode($db_status)->status_code == 200){
-					$this->greeting_card_id = json_decode($db_status)->greeting_card_id;
+				if($db_status["status_code"] == 200){
+					$this->greeting_card_id = $db_status["greeting_card_id"];
+					$this->greeting_card_link = $this->get_greeting_card_link($this->greeting_card_id );
 					send_greeting_card_email($this);
 					return "200";
 				}
@@ -43,5 +44,10 @@ class GreetingCard{
 
 			}
 		}
+	}
+
+	private function get_greeting_card_link($greeting_card_id){
+		$link = "http://localhost:8888/birthdaymanager/app/greetings?greeting-card-id=".$greeting_card_id;
+		return $link;
 	}
 }
