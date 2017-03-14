@@ -915,7 +915,7 @@ function get_greetings_by_greeting_card_id($greeting_card_id){
 			$greeting[] = array(
 				'greeting_card_id' => $row["greeting_card_id"],
 				'receiver_id' => $row["receiver_id"],
-				'receiver_name' => get_team_member_name_by_team_member_id($row["receiver_id"]),
+				'receiver_name' => get_team_member_first_name_by_team_member_id($row["receiver_id"]),
 				'creation_date' => $row["creation_date"],
 				'send_date' => $row["send_date"],
 				'greeting_sender' => get_greeting_sender_details_by_greeting_card_id($greeting_card_id)

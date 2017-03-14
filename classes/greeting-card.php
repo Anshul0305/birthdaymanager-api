@@ -47,7 +47,7 @@ class GreetingCard{
 	}
 
 	private function get_greeting_card_link($greeting_card_id){
-		$link = "http://localhost:8888/birthdaymanager/app/greetings?greeting-card-id=".$greeting_card_id;
+		$link = json_decode(file_get_contents("env.json"))->website_host."/greetings?greeting-card-id=".$greeting_card_id;
 		return $link;
 	}
 }

@@ -158,7 +158,6 @@ function handle_get($query,$val,$subquery){
 		echo json_encode($default);
 	}
 }
-	
 }
 
 // Handle Post Requests
