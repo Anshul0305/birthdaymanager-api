@@ -9,7 +9,7 @@
 </ul>
 
 <br>
-<p>If you have any other questions, feel free to write us at hello@onlinebirthdaymanager.com.</p>
+<p>If you have any other questions, feel free to reply to this email.</p>
 
 <p>Regards, <br></br>
 Birthday Manager Team</p>
