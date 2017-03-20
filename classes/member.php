@@ -75,6 +75,12 @@ class Member {
 			}
 			break;
 
+			case "greetings":{
+				$team_member_greetings = get_greetings_by_member_id($member_id);
+				return $team_member_greetings;
+			}
+			break;
+
 			case "transactions":{
 				$transactions = get_member_transactions_by_member_id($member_id);
 				return $transactions;

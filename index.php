@@ -94,7 +94,7 @@ try {
 		handle_get($query,$val,$subquery);
 		break;
 	  case "DELETE":
-		handle_delete($query,$val,$subquery);
+		handle_delete($query,$val);
 		break;
 	  default:
 		//handle_error($query,$val,$subquery);

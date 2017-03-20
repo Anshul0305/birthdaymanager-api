@@ -850,21 +850,45 @@ function post_add_celebration(Celebration $celebration){
 	disconnect($connection);
 	return ($result_celebration == true && $result_attendees == true && $transaction_result == true && $update_result == true)?true:false;
 }
-function get_celebrations_by_member_id($member_id){
+function get_celebrations_by_member_id($member_id)
+{
 	$connection = connect();
-	$sql = "SELECT `celebration_id` FROM `celebration_attendees` WHERE `member_id` = ".$member_id;
+	$sql = "SELECT `celebration_id` FROM `celebration_attendees` WHERE `member_id` = " . $member_id;
 	$result = $connection->query($sql);
 	disconnect($connection);
-	if ($result->num_rows>0) {
+	if ($result->num_rows > 0) {
 		$celebration = array();
 		while ($row = $result->fetch_assoc()) {
 			$celebration_team_id = get_celebrations_by_celebration_id($row["celebration_id"])[0]["team_id"];
-			if(is_member_part_of_team($member_id,$celebration_team_id)) {
+			if (is_member_part_of_team($member_id, $celebration_team_id)) {
 				$celebration[] = get_celebrations_by_celebration_id($row["celebration_id"])[0];
 			}
 		}
 	}
 	return $celebration;
+}
+function get_greetings_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT `greeting_card_id` FROM `greeting_cards` WHERE `receiver_id` = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	if ($result->num_rows>0) {
+		$received_greetings = array();
+		while ($row = $result->fetch_assoc()) {
+			$received_greetings[] = $row["greeting_card_id"];
+		}
+	}
+	$connection = connect();
+	$sql = "SELECT `greeting_card_id` FROM `greeting_card_messages` WHERE `sender_id` = ".$member_id;
+	$result = $connection->query($sql);
+	disconnect($connection);
+	if ($result->num_rows>0) {
+		$sent_greetings = array();
+		while ($row = $result->fetch_assoc()) {
+			$sent_greetings[] = $row["greeting_card_id"];
+		}
+	}
+	return array("received_greetings" => $received_greetings, "sent_greetings" => $sent_greetings, );
 }
 function send_birthday_invitation($celebration){
 	// Do some action
