@@ -538,7 +538,7 @@ function autologin_member(Member $member){
 
 	return $result;
 }
-function get_autologin_link($email){
+function get_autologin_link_by_email($email){
 	$connection = connect();
 	$sql = "SELECT member_id, email, reset_code FROM team_members";
 	$result = $connection->query($sql);
@@ -552,6 +552,22 @@ function get_autologin_link($email){
 		}
 	}
 	$result = json_decode(file_get_contents("././env.json"))->website_host."/autologin.php?signin-email=".$email."&signin-code=".$db_code;
+	return $result;
+}
+function get_autologin_link_by_member_id($member_id){
+	$connection = connect();
+	$sql = "SELECT member_id, email, reset_code FROM team_members";
+	$result = $connection->query($sql);
+	disconnect($connection);
+	$db_code = "";
+	if ($result->num_rows>0) {
+		while ($row = $result->fetch_assoc()) {
+			if($row["member_id"] == $member_id){
+				$db_code = $row["reset_code"];
+			}
+		}
+	}
+	$result = json_decode(file_get_contents("././env.json"))->website_host."/autologin.php?signin-email=".get_team_member_email_by_id($member_id)."&signin-code=".$db_code;
 	return $result;
 }
 function get_reset_password_code(Member $member){
@@ -927,6 +943,57 @@ function post_greeting_card(GreetingCard $greeting_card){
 		return array("success" => false, "status_code" => 401);
 	}
 }
+function post_sign_greeting_card(GreetingCard $greeting_card){
+	$greeting_card_id = $greeting_card->greeting_card_id;
+	$sender_id = $greeting_card->sender_id;
+	$message = $greeting_card->greeting_card_message;
+
+	$connection = connect();
+	$sql = "INSERT INTO greeting_card_messages (id, greeting_card_id, sender_id, greeting_message) VALUES (NULL, ".$greeting_card_id.", ".$sender_id.",'".$message."')";
+	$result = $connection->query($sql);
+
+	disconnect($connection);
+
+	if($result == true ){
+		return array("success" => true, "status_code" => 200 ,"greeting_card_id" => $greeting_card_id);
+	}
+	else {
+		return array("success" => false, "status_code" => 401);
+	}
+}
+//function post_team_greeting_card(GreetingCard $greeting_card){
+//	$receiver_id = $greeting_card->receiver_id;
+//	$message = $greeting_card->greeting_card_message;
+//	$creation_date = $greeting_card->creation_date;
+//	$send_date = $greeting_card->send_date;
+//	$sender_id = $greeting_card->sender_id;
+//	//$greeting_card_id = $greeting_card->greeting_card_id;
+//	//$team_id = $greeting_card->team_id;
+//	//$message_for_team = $greeting_card->message_for_team;
+//
+//	$connection = connect();
+//	$sql = "INSERT INTO greeting_cards (greeting_card_id, receiver_id, creation_date, send_date) VALUES (NULL,'".$receiver_id."',".$creation_date.",".$send_date.")";
+//	$result_1 = $connection->query($sql);
+//	$sql = "SELECT greeting_card_id FROM greeting_cards ORDER BY greeting_card_id DESC LIMIT 1";
+//	$result = $connection->query($sql);
+//	$last_greeting_card_id = "";
+//	if ($result->num_rows>0) {
+//		while ($row = $result->fetch_assoc()) {
+//			$last_greeting_card_id = $row["greeting_card_id"];
+//		}
+//	}
+//	$sql = "INSERT INTO greeting_card_messages (id, greeting_card_id, sender_id, greeting_message) VALUES (NULL, ".$last_greeting_card_id.", ".$sender_id.",'".$message."')";
+//	$result_2 = $connection->query($sql);
+//
+//	disconnect($connection);
+//
+//	if($result_1 == true && $result_2 == true ){
+//		return array("success" => true, "status_code" => 200 ,"greeting_card_id" => $last_greeting_card_id);
+//	}
+//	else {
+//		return array("success" => false, "status_code" => 401);
+//	}
+//}
 function get_greetings_by_greeting_card_id($greeting_card_id){
 	$connection = connect();
 	$sql = "SELECT greeting_card_id, receiver_id, creation_date, send_date FROM greeting_cards WHERE greeting_card_id = ".$greeting_card_id;

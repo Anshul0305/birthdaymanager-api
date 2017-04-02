@@ -42,22 +42,24 @@ $receiver_id = $_POST["receiver_id"];  // receiver of greeting card
 $greeting_card_message = $_POST["greeting_card_message"]; // message from sender
 $greeting_card_mail_subject = $_POST["greeting_card_mail_subject"];  // email subject for greeting card
 $greeting_card_send_date = $_POST["send_date"]; // when the greeting card should be sent
+$message_for_team = $_POST["message_for_team"]; // message for team when team greeting card is sent
+$greeting_card_id = $_POST["greeting_card_id"]; // greeting_card_id
 
 //Headers
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-$enable_debug=false;
+$enable_debug=true;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "greeting-card";
+	$query = "login";
 	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
 	$team_admin_id = 1;
-	$email = "anshul121@gm.com";
-	$password = "anshul";
+	$email = "anshul1@mailinator.com";
+	$password = "test";
 	$official_dob = "2010-01-01";
 	$first_name = "Ansh";
 	$last_name = "Shr";
@@ -79,6 +81,8 @@ if($enable_debug==true) {
 	$greeting_card_message = "message"; // message from sender
 	$greeting_card_mail_subject = "Happy Birthday";  // email subject for greeting card
 	$greeting_card_send_date = 2018;
+	$message_for_team = "Test";
+	$greeting_card_id = "11";
 }
 
 // Handle Methods
@@ -88,7 +92,7 @@ try {
 		handle_put($query, $member_id, $email, $official_dob, $first_name, $last_name);
 		break;
 	  case 'POST':
-		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message, $birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject, $greeting_card_send_date);
+		handle_post($query,$team_name, $team_admin_id,$email,$password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund,$birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message, $birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject, $greeting_card_send_date, $message_for_team, $greeting_card_id);
 		break;
 	  case 'GET':
 		handle_get($query,$val,$subquery);
@@ -161,7 +165,7 @@ function handle_get($query,$val,$subquery){
 }
 
 // Handle Post Requests
-function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message,$birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject, $greeting_card_send_date){
+function handle_post($query, $team_name, $team_admin_id, $email, $password, $official_dob, $first_name, $last_name,$team_id, $member_id, $fund, $birthday_of_member_id, $cake_amount,$other_expense, $celebration_date, $celebration_time, $birthday_invitation_message,$birthday_invitation_location,$attendees_member_id, $reset_code, $password1, $password2, $message, $sender_id, $receiver_id, $greeting_card_message, $greeting_card_mail_subject, $greeting_card_send_date, $message_for_team, $greeting_card_id){
 	switch($query){
 		case "teams":{
 			$team_obj = new Team();
@@ -348,14 +352,39 @@ function handle_post($query, $team_name, $team_admin_id, $email, $password, $off
 			$greeting_card_obj->receiver_id = $receiver_id;
 			$greeting_card_obj->greeting_card_message = $greeting_card_message;
 			$greeting_card_obj->greeting_card_mail_subject = $greeting_card_mail_subject;
-			$greeting_card_obj->creation_date = date("Y");
+			$greeting_card_obj->creation_date = date("d-m-Y");
 			$greeting_card_obj->send_date = $greeting_card_send_date;
-
 			$status_code = $greeting_card_obj->process_post("greeting-card");
 			show_response($status_code);
 			return $status_code;
 		}
 		break;
+		case "team-greeting-card": {
+			$greeting_card_obj = new GreetingCard();
+			$greeting_card_obj->sender_id = $sender_id;
+			$greeting_card_obj->team_id = $team_id;
+			$greeting_card_obj->receiver_id = $receiver_id;
+			$greeting_card_obj->greeting_card_id = $greeting_card_id;
+			$greeting_card_obj->greeting_card_message = $greeting_card_message;
+			$greeting_card_obj->greeting_card_mail_subject = $greeting_card_mail_subject;
+			$greeting_card_obj->creation_date = date("d-m-Y");
+			$greeting_card_obj->send_date = $greeting_card_send_date;
+			$greeting_card_obj->message_for_team = $message_for_team;
+			$status_code = $greeting_card_obj->process_post("team-greeting-card");
+			show_response($status_code);
+			return $status_code;
+		}
+		break;
+		case "sign-team-greeting-card": {
+			$greeting_card_obj = new GreetingCard();
+			$greeting_card_obj->sender_id = $sender_id;
+			$greeting_card_obj->greeting_card_id = $greeting_card_id;
+			$greeting_card_obj->greeting_card_message = $greeting_card_message;
+			$status_code = $greeting_card_obj->process_post("sign-team-greeting-card");
+			show_response($status_code);
+			return $status_code;
+		}
+			break;
 		default:{
 
 		}
