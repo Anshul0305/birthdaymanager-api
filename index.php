@@ -50,7 +50,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 //Debug Define
-$enable_debug=true;
+$enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
 	$query = "login";

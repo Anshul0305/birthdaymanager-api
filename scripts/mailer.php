@@ -274,20 +274,21 @@ function send_greeting_card_email(GreetingCard $greeting_card){
 function send_team_greeting_card_email(GreetingCard $greeting_card){
 
   foreach (get_team_member_id_by_team_id($greeting_card->team_id) as $team_member){
-    if($team_member[id]==$greeting_card->sender_id || $team_member[id]==$greeting_card->receiver_id)
+    $team_member_id = $team_member[id];
+    if($team_member_id == $greeting_card->sender_id || $team_member_id ==$greeting_card->receiver_id)
     {
       // if id is sender or receiver id, don't do anything as we don't want to send email to sender or receiver
     }
     else{
-      $greeting_card->greeting_card_link = get_autologin_link_by_member_id(team_member[id])."&destination=team-greetings?greeting-card-id=".$greeting_card->greeting_card_id;
+      $greeting_card->greeting_card_link = get_autologin_link_by_member_id($team_member_id)."&destination=team-greetings?greeting-card-id=".$greeting_card->greeting_card_id;
       $mail = email_init();
       $template = file_get_contents(getcwd().'/scripts/email_templates/sign_team_greeting_card.php');
-      $mail->addAddress(get_team_member_email_by_id($team_member[id]));
+      $mail->addAddress(get_team_member_email_by_id($team_member_id));
       $sender_name = get_team_member_first_name_by_team_member_id($greeting_card->sender_id);
       $greeting_card_recipient_name = get_team_member_first_name_by_team_member_id($greeting_card->receiver_id);
       $mail->Subject = "Please sign the greeting card for ".$greeting_card_recipient_name." - Online Birthday Manager";
       $body = str_replace("{sender_name}",$sender_name, $template);
-      $body = str_replace("{receiver_name}", get_team_member_first_name_by_team_member_id($team_member[id]),$body);
+      $body = str_replace("{receiver_name}", get_team_member_first_name_by_team_member_id($team_member_id),$body);
       $body = str_replace("{greeting_card_recipient}",$greeting_card_recipient_name, $body);
       $body = str_replace("{greeting_card_link}",$greeting_card->greeting_card_link, $body);
       $body = str_replace("{greeting_card_message}",$greeting_card->message_for_team, $body);
