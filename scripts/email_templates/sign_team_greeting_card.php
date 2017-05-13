@@ -248,7 +248,9 @@
 
                                     <div style="line-height: 21px">
 
-                                        <p style="color: #838383; font-family: 'Source Sans Pro', Helvetica, Calibri, sans-serif; line-height: 21px;font-size:15px;" class="align-center outlook-font"> Please sign the greeting card for {greeting_card_recipient}. {greeting_card_message}. </p>
+                                        <p style="color: #838383; font-family: 'Source Sans Pro', Helvetica, Calibri, sans-serif; line-height: 21px;font-size:15px;" class="align-center outlook-font"> Please sign the greeting card for {greeting_card_recipient}. </p>
+
+                                        <p style="color: #838383; font-family: 'Source Sans Pro', Helvetica, Calibri, sans-serif; line-height: 21px;font-size:15px;" class="align-center outlook-font">Here is the message from Team Admin: &nbsp; {greeting_card_message}. </p>
                                     </div>
                                 </td>
                             <tr>

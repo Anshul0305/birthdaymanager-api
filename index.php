@@ -57,7 +57,7 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "login";
+	$query = "team-greeting-card";
 	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
