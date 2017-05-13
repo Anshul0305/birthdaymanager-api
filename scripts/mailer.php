@@ -5,9 +5,9 @@ require_once '././phpmailer/PHPMailerAutoload.php';
 $enable_email = true;
 
 function email_init(){
-  $mail = new PHPMailer();
+  $mail = new PHPMailer(true);
   $mail->isSMTP();                                      // Set mailer to use SMTP
-  $mail->Host = 'gator4179.hostgator.com';  // Specify main and backup SMTP servers
+  $mail->Host = 'gator4179.hostgator.com';              // Specify main and backup SMTP servers
   $mail->SMTPAuth = true;                               // Enable SMTP authentication
   $mail->Username = 'hello@onlinebirthdaymanager.com';                 // SMTP username
   $mail->Password = 'London@123';                           // SMTP password
