@@ -7,47 +7,43 @@ require_once('classes/greeting-card.php');
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Get Params
-if($method = "GET") {
-	$query = $_GET["query"];
-	$val = $_GET["val"];
-	$subquery = $_GET["subquery"];
-}
+$query = $_GET["query"];
+$val = $_GET["val"];
+$subquery = $_GET["subquery"];
 
 // Post Params
-if($method == "POST") {
-	$first_name = $_POST["first_name"];  // first name of member
-	$last_name = $_POST["last_name"];  // last name of member
-	$email = $_POST["email"];  // email address of member
-	$password = $_POST["password"];  // password of member
-	$official_dob = $_POST["official_dob"];  // official dob of member
-	$member_type = $_POST["member_type"];  // member type of member
-	$member_id = $_POST["member_id"];  // member id of team member
-	$fund = $_POST["fund"];  // fund amount of team member
-	$cake_amount = $_POST["cake_amount"];  // cake amount for birthday celebration
-	$other_expense = $_POST["other_expense"];  // other expense amount
-	$total_attendees = $_POST["total_attendees"];  // count of total attendees
-	$celebration_date = $_POST["celebration_date"];  // birthday celebration date
-	$celebration_time = $_POST["celebration_time"];  // birthday celebration time
-	$birthday_invitation_message = $_POST["birthday_invitation_message"];  // birthday invitation message
-	$birthday_invitation_location = $_POST["birthday_invitation_location"];  // birthday invitation location
-	$per_head_contribution = $_POST["per_head_contribution"];  // per head contribution amount
-	$birthday_of_member_id = $_POST["birthday_of_member_id"];  // member id of member having birthday
-	$attendees_member_id = $_POST["attendees_member_id"];  // array of celebrations attendees
-	$team_name = $_POST["team_name"];  // team name
-	$team_admin_id = $_POST["team_admin_id"];  // array of team admin ids
-	$team_id = $_POST["team_id"];  // team id
-	$reset_code = $_POST["reset_code"];  // reset password code
-	$password1 = $_POST["password1"];  // password 1
-	$password2 = $_POST["password2"];  // password 2
-	$message = $_POST["message"];  // message to be posted in team
-	$sender_id = $_POST["sender_id"];  // sender of greeting card
-	$receiver_id = $_POST["receiver_id"];  // receiver of greeting card
-	$greeting_card_message = $_POST["greeting_card_message"]; // message from sender
-	$greeting_card_mail_subject = $_POST["greeting_card_mail_subject"];  // email subject for greeting card
-	$greeting_card_send_date = $_POST["send_date"]; // when the greeting card should be sent
-	$message_for_team = $_POST["message_for_team"]; // message for team when team greeting card is sent
-	$greeting_card_id = $_POST["greeting_card_id"]; // greeting_card_id
-}
+$first_name = $_POST["first_name"];  // first name of member
+$last_name = $_POST["last_name"];  // last name of member
+$email = $_POST["email"];  // email address of member
+$password = $_POST["password"];  // password of member
+$official_dob = $_POST["official_dob"];  // official dob of member
+$member_type = $_POST["member_type"];  // member type of member
+$member_id = $_POST["member_id"];  // member id of team member
+$fund = $_POST["fund"];  // fund amount of team member
+$cake_amount = $_POST["cake_amount"];  // cake amount for birthday celebration
+$other_expense = $_POST["other_expense"];  // other expense amount
+$total_attendees = $_POST["total_attendees"];  // count of total attendees
+$celebration_date = $_POST["celebration_date"];  // birthday celebration date
+$celebration_time = $_POST["celebration_time"];  // birthday celebration time
+$birthday_invitation_message = $_POST["birthday_invitation_message"];  // birthday invitation message
+$birthday_invitation_location = $_POST["birthday_invitation_location"];  // birthday invitation location
+$per_head_contribution = $_POST["per_head_contribution"];  // per head contribution amount
+$birthday_of_member_id = $_POST["birthday_of_member_id"];  // member id of member having birthday
+$attendees_member_id = $_POST["attendees_member_id"];  // array of celebrations attendees
+$team_name = $_POST["team_name"];  // team name
+$team_admin_id = $_POST["team_admin_id"];  // array of team admin ids
+$team_id = $_POST["team_id"];  // team id
+$reset_code = $_POST["reset_code"];  // reset password code
+$password1 = $_POST["password1"];  // password 1
+$password2 = $_POST["password2"];  // password 2
+$message = $_POST["message"];  // message to be posted in team
+$sender_id = $_POST["sender_id"];  // sender of greeting card
+$receiver_id = $_POST["receiver_id"];  // receiver of greeting card
+$greeting_card_message = $_POST["greeting_card_message"]; // message from sender
+$greeting_card_mail_subject = $_POST["greeting_card_mail_subject"];  // email subject for greeting card
+$greeting_card_send_date = $_POST["send_date"]; // when the greeting card should be sent
+$message_for_team = $_POST["message_for_team"]; // message for team when team greeting card is sent
+$greeting_card_id = $_POST["greeting_card_id"]; // greeting_card_id
 
 //Headers
 header("Access-Control-Allow-Origin: *");
