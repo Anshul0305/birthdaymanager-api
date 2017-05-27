@@ -341,7 +341,7 @@
                         <table border="0" width="180" align="left" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="container590">
                             <tr>
                                 <td align="center">
-                                    <img src="http://www.pd4pic.com/images/clock-watch-date-analog-calendar-office-time.png" style="display: block; width: 140px;" width="140" border="0" alt="" />
+                                    <img src="http://onlinebirthdaymanager.com/images/email/dateandtime.png" style="display: block; width: 140px;" width="140" border="0" alt="" />
                                 </td>
                             </tr>
                         </table>
@@ -384,7 +384,7 @@
                         <table border="0" width="180" align="left" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="container590">
                             <tr>
                                 <td align="center">
-                                    <img src="http://www.cypttom.com/images/location_icon.png" style="display: block; width: 140px;" width="140" border="0" alt="" />
+                                    <img src="http://onlinebirthdaymanager.com/images/email/location1.png" style="display: block; width: 200px;" width="200" border="0" alt="" />
                                 </td>
                             </tr>
                         </table>
@@ -426,7 +426,7 @@
                         <table border="0" width="180" align="left" cellpadding="0" cellspacing="0" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="container590">
                             <tr>
                                 <td align="center">
-                                    <img src="https://lh3.googleusercontent.com/cXt3BqL-z__V-6PfzXYkuBqSk7zsd4iU8R8cKjmy2CSxzywkh1qZu_WpXR_SDoMnqHI=w300" style="display: block; width: 140px;" width="140" border="0" alt="" />
+                                    <img src="http://onlinebirthdaymanager.com/images/email/message.png" style="display: block; width: 140px;" width="140" border="0" alt="" />
                                 </td>
                             </tr>
                         </table>
