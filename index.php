@@ -53,7 +53,7 @@ header("Content-Type: application/json; charset=UTF-8");
 $enable_debug=false;
 if($enable_debug==true) {
 	$method = "POST";
-	$query = "team-greeting-card";
+	$query = "greeting-card";
 	$val = "weekly";
 	$subquery = "weekly";
 	$team_name = "Test";
@@ -76,11 +76,11 @@ if($enable_debug==true) {
 	$celebration_time = "";
 	$birthday_invitation_location = "location";
 	$birthday_invitation_message  = "message";
-	$sender_id = 14;
-	$receiver_id = 15;
+	$sender_id = 20;
+	$receiver_id = 14;
 	$greeting_card_message = "message"; // message from sender
 	$greeting_card_mail_subject = "Happy Birthday";  // email subject for greeting card
-	$greeting_card_send_date = 2018;
+	$greeting_card_send_date = "3-5-2018";
 	$message_for_team = "Test";
 	$greeting_card_id = "11";
 }

@@ -916,12 +916,12 @@ function send_birthday_invitation($celebration){
 function post_greeting_card(GreetingCard $greeting_card){
 	$receiver_id = $greeting_card->receiver_id;
 	$message = $greeting_card->greeting_card_message;
-	$creation_date = $greeting_card->creation_date;
-	$send_date = $greeting_card->send_date;
+	$creation_date = date("Y-m-d", strtotime($greeting_card->creation_date));
+	$send_date = date("Y-m-d", strtotime($greeting_card->send_date));
 	$sender_id = $greeting_card->sender_id;
 
 	$connection = connect();
-	$sql = "INSERT INTO greeting_cards (greeting_card_id, receiver_id, creation_date, send_date) VALUES (NULL,'".$receiver_id."',".$creation_date.",".$send_date.")";
+	$sql = "INSERT INTO greeting_cards (greeting_card_id, receiver_id, creation_date, send_date) VALUES (NULL,'".$receiver_id."','".$creation_date."','".$send_date."')";
 	$result_1 = $connection->query($sql);
 	$sql = "SELECT greeting_card_id FROM greeting_cards ORDER BY greeting_card_id DESC LIMIT 1";
 	$result = $connection->query($sql);
