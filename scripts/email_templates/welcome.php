@@ -206,14 +206,14 @@
 															<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
 																	<tbody>
 																	<tr>
-																		<td valign="top" align="center" class="specbundle"><div class="contentEditableContainer contentTextEditable">
-																				<div class="contentEditable">
-																					<p style='text-align:right;margin:0;font-family:Georgia,Time,sans-serif;font-size:26px;color:#222222;'><span class="specbundle2"><span class="font1">Welcome to&nbsp;</span></span></p>
-																				</div>
-																			</div></td>
+<!--																		<td valign="top" align="center" class="specbundle"><div class="contentEditableContainer contentTextEditable">-->
+<!--																				<div class="contentEditable">-->
+<!--																					<p style='text-align:right;margin:0;font-family:Georgia,Time,sans-serif;font-size:26px;color:#222222;'><span class="specbundle2"><span class="font1">Welcome to&nbsp;</span></span></p>-->
+<!--																				</div>-->
+<!--																			</div></td>-->
 																		<td valign="top" class="specbundle"><div class="contentEditableContainer contentTextEditable">
 																				<div class="contentEditable">
-																					<p style='text-align:left;margin:0;font-family:Georgia,Time,sans-serif;font-size:26px;color:#DC2828;'><span class="font">Online Birthday Manager</span> </p>
+																					<p style='text-align:left;margin:0;font-family:Georgia,Time,sans-serif;font-size:26px;color:#DC2828;'><span class="font">Welcome to Online Birthday Manager</span> </p>
 																				</div>
 																			</div></td>
 																	</tr>
