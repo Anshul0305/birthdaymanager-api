@@ -166,7 +166,7 @@
     <tr>
         <td>
             <div style="overflow:hidden;display:none;font-size:1px;color:#ffffff;line-height:1px;font-family:Arial;maxheight:0px;max-width:0px;opacity:0;">
-                Invitation - Online Birthday Manager
+                Upcoming Birthdays - Online Birthday Manager
             </div>
         </td>
     </tr>
